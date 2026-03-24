@@ -10,7 +10,7 @@ class PartnerController extends Controller
 {
    public function index()
 {
-    $partners = Partner::all();
+    $partners = Partner::paginate(10); // 10 po stranici
     return view('partners.index', compact('partners'));
 }
 
@@ -23,9 +23,14 @@ public function store(Request $request)
 {
     $data = $request->validate([
         'name' => 'required|string|max:255',
-        'type' => 'nullable|string|max:100',
-        'phone' => 'nullable|string|max:50',
-        'note' => 'nullable|string|max:1000',
+        'type' => 'nullable|string|max:255',
+        'phone' => 'nullable|string|max:255',
+        'note' => 'nullable|string|max:65535',
+        'email' => 'nullable|email|max:255',
+        'address' => 'nullable|string|max:255',
+        'city' => 'nullable|string|max:255',
+        'vat_number' => 'nullable|string|max:50',
+        'contact_person' => 'nullable|string|max:255',
     ]);
 
     Partner::create($data);

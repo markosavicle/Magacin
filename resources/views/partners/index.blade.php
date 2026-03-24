@@ -25,7 +25,7 @@
             </div>
 
             <!-- Table -->
-            <div class="bg-white shadow sm:rounded-lg overflow-hidden">
+            <div class="bg-white shadow sm:rounded-lg overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
@@ -33,7 +33,12 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tip</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Telefon</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Napomena</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Akcije</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Adresa</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Grad</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">PDV broj</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Kontakt osoba</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Akcije</th>                            
                         </tr>
                     </thead>
 
@@ -44,6 +49,11 @@
                             <td class="px-6 py-4 text-sm text-gray-900">{{ $partner->type }}</td>
                             <td class="px-6 py-4 text-sm text-gray-900">{{ $partner->phone }}</td>
                             <td class="px-6 py-4 text-sm text-gray-900">{{ $partner->note }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-900">{{ $partner->email }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-900">{{ $partner->address }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-900">{{ $partner->city }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-900">{{ $partner->vat_number }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-900">{{ $partner->contact_person }}</td>
 
                             <td class="px-6 py-4 text-sm flex gap-2">
                                 <!-- Edit -->
@@ -74,6 +84,10 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- Pagination -->
+            <div class="mt-4">
+                {{ $partners->links() }} <!-- Laravel-ova funkcija za paginaciju -->
 
         </div>
     </div>
