@@ -22,6 +22,9 @@ class Partner extends Model
         'note',
         'email',
         'address',
+        'city',
+        'vat_number',
+        'contact_person',
     ];
 
     /**
