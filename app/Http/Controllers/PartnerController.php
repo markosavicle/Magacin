@@ -44,7 +44,18 @@ public function edit(Partner $partner)
 
 public function update(Request $request, Partner $partner)
 {
-    $partner->update($request->all());
+    $data = $request->validate([
+        'name' => 'required|string|max:255',
+        'type' => 'nullable|string|max:255',
+        'phone' => 'nullable|string|max:255',
+        'note' => 'nullable|string|max:65535',
+        'email' => 'nullable|email|max:255',
+        'address' => 'nullable|string|max:255',
+        'city' => 'nullable|string|max:255',
+        'vat_number' => 'nullable|string|max:50',
+        'contact_person' => 'nullable|string|max:255',
+    ]);   
+    $partner->update($data);
     return redirect()->route('partners.index')->with('success', 'Partner izmenjen!');
 }
 
