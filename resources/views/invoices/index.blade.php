@@ -30,6 +30,8 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Iznos</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Napomena</th>
+                            {{-- nema potrebe za stavkama, vide se u edit faktura --}}
+                            {{-- <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Stavke</th> --}}
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Akcije</th>
                         </tr>
                     </thead>
@@ -42,6 +44,13 @@
                             <td class="px-6 py-4 text-sm text-gray-900">{{ number_format($invoice->amount, 2) }} RSD</td>
                             <td class="px-6 py-4 text-sm text-gray-900">{{ $invoice->status }}</td>
                             <td class="px-6 py-4 text-sm text-gray-900">{{ $invoice->note }}</td>
+                            {{-- <td class="px-6 py-4 text-sm text-gray-900">
+                                @foreach($invoice->items as $item)
+                                    <div>
+                                        {{ $item->name }} ({{ $item->quantity }}KG x {{ $item->price }}RSD)
+                                    </div>
+                                @endforeach
+                            </td> --}}
                             <td class="px-6 py-4 text-sm flex gap-2">
                                 <!-- Edit -->
                                 <x-primary-link href="{{ route('invoices.edit', $invoice) }}">

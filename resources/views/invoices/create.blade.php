@@ -48,10 +48,11 @@
                     </div>
 
                     <!-- Amount -->
-                    <div class="mb-4">
+                    <!-- we don't need this, it will be calculated from items -->
+                    {{-- <div class="mb-4">
                         <x-input-label for="amount" value="Iznos" />
                         <x-text-input id="amount" class="block w-full mt-1" type="number" step="0.01" name="amount" value="{{ old('amount') }}" required />
-                    </div>
+                    </div> --}}
 
                     <!-- Status -->
                     <div class="mb-4">
@@ -68,6 +69,24 @@
                         <textarea name="note" id="note" class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200">{{ old('note') }}</textarea>
                     </div>
 
+                    <!-- Invoice Items -->
+                    <div class="mb-4">
+                        <h3 class="font-semibold mb-2">Stavke fakture</h3>
+
+                        <div id="items">
+                            <div class="grid grid-cols-4 gap-2 mb-2">
+                                <input type="text" name="items[0][name]" placeholder="Naziv" class="border rounded p-2">
+                                <input type="number" step="0.01" name="items[0][quantity]" placeholder="Količina" class="border rounded p-2">
+                                <input type="number" step="0.01" name="items[0][price]" placeholder="Cena" class="border rounded p-2">
+                                <button type="button" onclick="removeItem(this)" class="bg-red-500 text-white px-2 rounded">X</button>
+                            </div>
+                        </div>
+
+                        <button type="button" onclick="addItem()" class="bg-blue-500 text-white px-4 py-2 rounded">
+                            + Dodaj stavku
+                        </button>
+                    </div>
+
                     <!-- Actions -->
                     <div class="flex items-center gap-3">
                         <x-primary-button type="submit">Sačuvaj</x-primary-button>
@@ -79,3 +98,24 @@
         </div>
     </div>
 </x-app-layout>
+
+<script>
+let index = 1;
+
+function addItem() {
+    let html = `
+    <div class="grid grid-cols-4 gap-2 mb-2">
+        <input type="text" name="items[${index}][name]" placeholder="Naziv" class="border rounded p-2">
+        <input type="number" step="0.01" name="items[${index}][quantity]" placeholder="Količina" class="border rounded p-2">
+        <input type="number" step="0.01" name="items[${index}][price]" placeholder="Cena" class="border rounded p-2">
+        <button type="button" onclick="removeItem(this)" class="bg-red-500 text-white px-2 rounded">X</button>
+    </div>
+    `;
+    document.getElementById('items').insertAdjacentHTML('beforeend', html);
+    index++;
+}
+
+function removeItem(btn) {
+    btn.parentElement.remove();
+}
+</script>

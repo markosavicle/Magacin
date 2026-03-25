@@ -22,6 +22,11 @@ public function partner()
     return $this->belongsTo(Partner::class);
 }
 
+public function items()
+{
+    return $this->hasMany(InvoiceItem::class);
+}
+
 protected $casts = [
     'date' => 'date',
 ];
