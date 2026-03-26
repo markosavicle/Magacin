@@ -45,7 +45,12 @@
                     <tbody class="divide-y divide-gray-200">
                         @foreach($partners as $partner)
                         <tr>
-                            <td class="px-6 py-4 text-sm text-gray-900">{{ $partner->name }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-900">
+                                <a href="{{ route('partners.show', $partner) }}" 
+                                class="text-indigo-600 hover:text-indigo-900 font-semibold">
+                                    {{ $partner->name }}
+                                </a>
+                            </td>
                             <td class="px-6 py-4 text-sm text-gray-900">{{ $partner->type }}</td>
                             <td class="px-6 py-4 text-sm text-gray-900">{{ $partner->phone }}</td>
                             <td class="px-6 py-4 text-sm text-gray-900">{{ $partner->note }}</td>

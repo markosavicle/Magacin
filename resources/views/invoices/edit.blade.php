@@ -56,6 +56,15 @@
                         <x-text-input id="date" class="block w-full mt-1" type="date" name="date" value="{{ old('date', $invoice->date->format('Y-m-d')) }}" required />
                     </div>
 
+                    <!-- Type -->
+                    <div class="mb-4">
+                        <x-input-label for="type" value="Tip" />
+                        <select name="type" id="type" class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200">
+                            <option value="out" {{ old('type', $invoice->type) == 'out' ? 'selected' : '' }}>Faktura (izlazna)</option>
+                            <option value="in" {{ old('type', $invoice->type) == 'in' ? 'selected' : '' }}>Faktura (ulazna)</option>
+                        </select>
+                    </div>
+
                     <!-- Status -->
                     <div class="mb-4">
                         <x-input-label for="status" value="Status" />

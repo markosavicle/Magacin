@@ -29,6 +29,7 @@ class InvoiceController extends Controller
             'date' => 'required|date',
             'status' => 'required|in:0,1',
             'note' => 'nullable|string|max:65535',
+            'type' => 'required|in:in,out',
         ]);
 
         // Generiši automatski invoice_number, npr. INV0001, INV0002...
@@ -83,6 +84,7 @@ class InvoiceController extends Controller
             //ako zelimo da menjamo iznos mauelno, nema potrebe racunamo sa proizvodima 'amount' => 'required|numeric|min:0',
             'status' => 'required|in:0,1',
             'note' => 'nullable|string|max:65535',
+            'type' => 'required|in:in,out',
         ]);
 
         $invoice->update($data);

@@ -28,6 +28,7 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Partner</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Datum</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Iznos</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tip</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Napomena</th>
                             {{-- nema potrebe za stavkama, vide se u edit faktura --}}
@@ -42,6 +43,9 @@
                             <td class="px-6 py-4 text-sm text-gray-900">{{ $invoice->partner->name }}</td>
                             <td class="px-6 py-4 text-sm text-gray-900">{{ $invoice->date->format('d.m.Y') }}</td>
                             <td class="px-6 py-4 text-sm text-gray-900">{{ number_format($invoice->amount, 2) }} RSD</td>
+                            <td class="px-6 py-4 text-sm text-gray-900">
+                                {{ $invoice->type == 'out'? 'Faktura (izlazna)' : 'Faktura (ulazna)' }}
+                            </td>
                             <td class="px-6 py-4 text-sm text-gray-900">
                                 @if($invoice->status == \App\Models\Invoice::STATUS_PAID)
                                     Plaćeno

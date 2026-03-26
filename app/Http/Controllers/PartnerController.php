@@ -64,4 +64,20 @@ public function destroy(Partner $partner)
     $partner->delete();
     return redirect()->route('partners.index')->with('success', 'Partner obrisan!');
 }
+
+public function show(Partner $partner)
+{
+    $invoices = $partner->invoices()->latest()->get();
+    $transactions = $partner->transactions()->latest()->get();
+
+    $balance = $partner->balance();
+
+    return view('partners.show', compact(
+        'partner',
+        'invoices',
+        'transactions',
+        'balance'
+    ));
+}
+
 }

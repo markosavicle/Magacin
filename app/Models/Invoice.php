@@ -18,6 +18,7 @@ protected $fillable = [
     'amount',
     'status',
     'note',
+    'type',
 ]; 
 
 public function partner()

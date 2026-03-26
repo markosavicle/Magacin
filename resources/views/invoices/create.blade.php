@@ -54,6 +54,16 @@
                         <x-text-input id="amount" class="block w-full mt-1" type="number" step="0.01" name="amount" value="{{ old('amount') }}" required />
                     </div> --}}
 
+
+                    <!-- Type -->
+                    <div class="mb-4">
+                        <x-input-label for="type" value="Tip" />
+                        <select name="type" id="type" class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200">
+                            <option value="out" {{ old('type') == 'out' ? 'selected' : '' }}>Faktura (izlazna)</option>
+                            <option value="in" {{ old('type') == 'in' ? 'selected' : '' }}>Faktura (ulazna)</option>
+                        </select>
+                    </div>
+
                     <!-- Status -->
                     <div class="mb-4">
                         <x-input-label for="status" value="Status" />
