@@ -9,8 +9,8 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     build-essential
 
-# Instaliraj Node 18.x
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+# Instaliraj Node 20 LTS
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs
 
 # PHP extensions
