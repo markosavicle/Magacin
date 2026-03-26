@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('invoice_number')->unique();
             $table->date('date');
             $table->decimal('amount', 10, 2);
-            $table->string('status')->default('Neplaćeno');
+            $table->tinyInteger('status')->default(0); // 0 - unpaid, 1 - paid
             $table->text('note')->nullable();
             $table->timestamps();
         });

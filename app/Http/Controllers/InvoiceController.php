@@ -27,7 +27,7 @@ class InvoiceController extends Controller
         $data = $request->validate([
             'partner_id' => 'required|exists:partners,id',
             'date' => 'required|date',
-            'status' => 'required|string|max:50',
+            'status' => 'required|in:0,1',
             'note' => 'nullable|string|max:65535',
         ]);
 
@@ -81,7 +81,7 @@ class InvoiceController extends Controller
             'invoice_number' => 'required|string|max:255|unique:invoices,invoice_number,' . $invoice->id,
             'date' => 'required|date',
             //ako zelimo da menjamo iznos mauelno, nema potrebe racunamo sa proizvodima 'amount' => 'required|numeric|min:0',
-            'status' => 'required|string|max:50',
+            'status' => 'required|in:0,1',
             'note' => 'nullable|string|max:65535',
         ]);
 

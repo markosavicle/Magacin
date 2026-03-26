@@ -42,7 +42,13 @@
                             <td class="px-6 py-4 text-sm text-gray-900">{{ $invoice->partner->name }}</td>
                             <td class="px-6 py-4 text-sm text-gray-900">{{ $invoice->date->format('d.m.Y') }}</td>
                             <td class="px-6 py-4 text-sm text-gray-900">{{ number_format($invoice->amount, 2) }} RSD</td>
-                            <td class="px-6 py-4 text-sm text-gray-900">{{ $invoice->status }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-900">
+                                @if($invoice->status == \App\Models\Invoice::STATUS_PAID)
+                                    Plaćeno
+                                @else
+                                    Neplaćeno
+                                @endif
+                            </td>
                             <td class="px-6 py-4 text-sm text-gray-900">{{ $invoice->note }}</td>
                             {{-- <td class="px-6 py-4 text-sm text-gray-900">
                                 @foreach($invoice->items as $item)
