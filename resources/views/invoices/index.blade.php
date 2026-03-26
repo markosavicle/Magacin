@@ -39,20 +39,33 @@
                     <tbody class="divide-y divide-gray-200">
                         @foreach($invoices as $invoice)
                         <tr>
-                            <td class="px-6 py-4 text-sm text-gray-900">{{ $invoice->invoice_number }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-900">{{ $invoice->partner->name }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-900">
+                                <a href="{{ route('invoices.show', $invoice) }}" class="text-indigo-600 hover:text-indigo-900 font-semibold">
+                                    {{ $invoice->invoice_number }}
+                                </a>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-900">
+                                <a href="{{ route('partners.show', $invoice->partner) }}" 
+                                class="text-indigo-600 hover:text-indigo-900 font-semibold">
+                                    {{ $invoice->partner->name }}
+                                </a>
+                            </td>
                             <td class="px-6 py-4 text-sm text-gray-900">{{ $invoice->date->format('d.m.Y') }}</td>
                             <td class="px-6 py-4 text-sm text-gray-900">{{ number_format($invoice->amount, 2) }} RSD</td>
                             <td class="px-6 py-4 text-sm text-gray-900">
                                 {{ $invoice->type == 'out'? 'Faktura (izlazna)' : 'Faktura (ulazna)' }}
                             </td>
-                            <td class="px-6 py-4 text-sm text-gray-900">
-                                @if($invoice->status == \App\Models\Invoice::STATUS_PAID)
-                                    Plaćeno
-                                @else
-                                    Neplaćeno
-                                @endif
-                            </td>
+                            <td class="px-6 py-4 text-sm">
+                                    @if($invoice->status == \App\Models\Invoice::STATUS_PAID)
+                                        <span class="px-2 py-1 text-xs font-semibold bg-green-100 text-green-700 rounded">
+                                            Plaćeno
+                                        </span>
+                                    @else
+                                        <span class="px-2 py-1 text-xs font-semibold bg-red-100 text-red-700 rounded">
+                                            Neplaćeno
+                                        </span>
+                                    @endif
+                                </td>
                             <td class="px-6 py-4 text-sm text-gray-900">{{ $invoice->note }}</td>
                             {{-- <td class="px-6 py-4 text-sm text-gray-900">
                                 @foreach($invoice->items as $item)

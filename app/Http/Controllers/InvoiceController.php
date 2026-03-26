@@ -125,8 +125,6 @@ class InvoiceController extends Controller
 
     public function show(Invoice $invoice)
     {
-        $invoice->load('partner', 'items');
-
         return view('invoices.show', compact('invoice'));
     }
 }

@@ -42,11 +42,10 @@
                         @forelse($invoices as $invoice)
                             <tr class="hover:bg-gray-50">
                                 <td class="px-6 py-4 text-sm text-gray-900">
-                                    <a href="{{ route('invoices.edit', $invoice) }}" 
-                                    class="text-indigo-600 hover:text-indigo-900 font-semibold">
-                                        {{ $invoice->invoice_number }}
-                                    </a>
-                                    
+                                <a href="{{ route('invoices.show', $invoice) }}" class="text-indigo-600 hover:text-indigo-900 font-semibold">
+                                    {{ $invoice->invoice_number }}
+                                </a>
+                                </td>
                                 <td class="px-6 py-4 text-sm text-gray-900">
                                     {{ $invoice->type == 'out'? 'Faktura (izlazna)' : 'Faktura (ulazna)' }}
                                 </td>
