@@ -75,13 +75,6 @@
                         <x-text-input id="contact_person" class="block mt-1 w-full" type="text" name="contact_person" value="{{ old('contact_person','') }}" />
                     </div>
 
-                    <!-- Phone Number -->
-                    <div class="mb-4">
-                        <x-input-label for="phone_number" value="Broj telefona" />
-                        <x-text-input id="phone_number" class="block mt-1 w-full" type="text" name="phone_number" value="{{ old('phone_number','') }}" />
-                    </div>
-
-
                     <!-- Actions -->
                     <div class="flex items-center gap-3">
                         <x-primary-button type="submit">

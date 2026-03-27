@@ -20,7 +20,6 @@ class PartnerController extends Controller
             'city' => 'nullable|string|max:255',
             'vat_number' => 'nullable|string|max:50',
             'contact_person' => 'nullable|string|max:255',
-            'phone_number' => 'nullable|string|max:255',
         ];
     }
 
@@ -36,7 +35,6 @@ class PartnerController extends Controller
               ->orWhereRaw('LOWER(type) LIKE ?', ["%{$search}%"])
               ->orWhereRaw('LOWER(email) LIKE ?', ["%{$search}%"])
               ->orWhereRaw('LOWER(phone) LIKE ?', ["%{$search}%"])
-              ->orWhereRaw('LOWER(phone_number) LIKE ?', ["%{$search}%"])
               ->orWhereRaw('LOWER(city) LIKE ?', ["%{$search}%"])
               ->orWhereRaw('LOWER(contact_person) LIKE ?', ["%{$search}%"])
               ->orWhereRaw('LOWER(vat_number) LIKE ?', ["%{$search}%"]);
