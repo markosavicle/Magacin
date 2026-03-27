@@ -92,14 +92,39 @@
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-900">
-                                    {{ $log->description }}
+                                    @php
+                                        $desc = $log->description;
+                                        $linkedDesc = null;
+                                        if ($log->model_type === \App\Models\Partner::class) {
+                                            $url = route('partners.show', $log->model_id);
+                                            if (preg_match('/^(Partner [^:]+: )(.+)$/u', $desc, $m)) {
+                                                $linkedDesc = e($m[1]) . '<a href="' . $url . '" class="text-indigo-600 hover:text-indigo-900 font-medium">' . e($m[2]) . '</a>';
+                                            }
+                                        } elseif ($log->model_type === \App\Models\Invoice::class) {
+                                            $url = route('invoices.show', $log->model_id);
+                                            if (preg_match('/^(Faktura [^:]+: )(.+)$/u', $desc, $m)) {
+                                                $linkedDesc = e($m[1]) . '<a href="' . $url . '" class="text-indigo-600 hover:text-indigo-900 font-medium">' . e($m[2]) . '</a>';
+                                            }
+                                        } elseif ($log->model_type === \App\Models\InvoiceItem::class) {
+                                            $invoiceId = ($log->new_values['invoice_id'] ?? null) ?: ($log->old_values['invoice_id'] ?? null);
+                                            if ($invoiceId && preg_match('/^(.+\(Faktura: )([^)]+)(\))$/u', $desc, $m)) {
+                                                $url = route('invoices.show', $invoiceId);
+                                                $linkedDesc = e($m[1]) . '<a href="' . $url . '" class="text-indigo-600 hover:text-indigo-900 font-medium">' . e($m[2]) . '</a>' . e($m[3]);
+                                            }
+                                        }
+                                    @endphp
+                                    @if($linkedDesc)
+                                        {!! $linkedDesc !!}
+                                    @else
+                                        {{ $desc }}
+                                    @endif
                                     @if($log->old_values || $log->new_values)
                                         <div class="mt-2 text-xs text-gray-500">
                                             @if($log->old_values)
-                                                <div><strong>Staro:</strong> {{ implode(', ', array_map(fn($k, $v) => "$k: $v", array_keys($log->old_values), $log->old_values)) }}</div>
+                                                <div><strong>Staro:</strong> {{ implode(', ', array_map(fn($k, $v) => "$k: " . (is_array($v) ? json_encode($v) : $v), array_keys($log->old_values), $log->old_values)) }}</div>
                                             @endif
                                             @if($log->new_values)
-                                                <div><strong>Novo:</strong> {{ implode(', ', array_map(fn($k, $v) => "$k: $v", array_keys($log->new_values), $log->new_values)) }}</div>
+                                                <div><strong>Novo:</strong> {{ implode(', ', array_map(fn($k, $v) => "$k: " . (is_array($v) ? json_encode($v) : $v), array_keys($log->new_values), $log->new_values)) }}</div>
                                             @endif
                                         </div>
                                     @endif

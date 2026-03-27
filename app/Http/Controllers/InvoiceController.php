@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\History;
 use App\Models\Invoice;
 use App\Models\Partner;
 use App\Models\InvoiceItem;
@@ -146,24 +147,52 @@ class InvoiceController extends Controller
         $invoice->update($data);
         $totalAmount = 0;
 
-    // obriši stare stavke
+        // Capture old items ordered by id (index-based comparison)
+        $oldItems = $invoice->items()->orderBy('id')->get()->values();
+
+        // Delete old items
         $invoice->items()->delete();
 
-        if ($request->items) {
-            foreach ($request->items as $item) {
-                if (!isset($item['name'], $item['quantity'], $item['price'])) continue;
+        $newItems = collect($request->items ?? [])
+            ->filter(fn($item) => isset($item['name'], $item['quantity'], $item['price']))
+            ->values();
 
-                $total = $item['quantity'] * $item['price'];
-                $totalAmount += $total;
+        foreach ($newItems as $i => $item) {
+            $total = $item['quantity'] * $item['price'];
+            $totalAmount += $total;
 
-                InvoiceItem::create([
-                    'invoice_id' => $invoice->id,
-                    'name' => $item['name'],
-                    'quantity' => $item['quantity'],
-                    'price' => $item['price'],
-                    'total' => $total,
-                ]);
+            $newItem = InvoiceItem::create([
+                'invoice_id' => $invoice->id,
+                'name' => $item['name'],
+                'quantity' => $item['quantity'],
+                'price' => $item['price'],
+                'total' => $total,
+            ]);
+
+            if (isset($oldItems[$i])) {
+                $old = $oldItems[$i];
+                $oldData = ['name' => $old->name, 'quantity' => (int)$old->quantity, 'price' => (float)$old->price, 'total' => (float)$old->total];
+                $newData = ['name' => $item['name'], 'quantity' => (int)$item['quantity'], 'price' => (float)$item['price'], 'total' => (float)$total];
+                $diff = [];
+                foreach ($newData as $key => $val) {
+                    if ($val != $oldData[$key]) {
+                        $diff[$key] = $val;
+                    }
+                }
+                if (!empty($diff)) {
+                    $oldDiff = array_intersect_key($oldData, $diff);
+                    $oldDiff['invoice_id'] = $invoice->id;
+                    History::log('updated', $newItem, $oldDiff, $diff, "Stavka fakture izmenjena: {$item['name']} (Faktura: {$invoice->invoice_number})");
+                }
+            } else {
+                History::log('created', $newItem, null, ['invoice_id' => $invoice->id, 'name' => $item['name'], 'quantity' => $item['quantity'], 'price' => $item['price'], 'total' => $total], "Stavka fakture kreirana: {$item['name']} (Faktura: {$invoice->invoice_number})");
             }
+        }
+
+        // Log deleted items (old items beyond the count of new items)
+        for ($i = $newItems->count(); $i < $oldItems->count(); $i++) {
+            $old = $oldItems[$i];
+            History::log('deleted', $old, ['invoice_id' => $invoice->id, 'name' => $old->name, 'quantity' => $old->quantity, 'price' => $old->price, 'total' => $old->total], null, "Stavka fakture obrisana: {$old->name} (Faktura: {$invoice->invoice_number})");
         }
 
         $invoice->update([

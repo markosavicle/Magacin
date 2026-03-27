@@ -30,7 +30,7 @@ class Partner extends Model
     protected static function booted()
     {
         static::created(function ($partner) {
-            History::log('created', $partner, null, $partner->toArray(), 'Partner kreiran');
+            History::log('created', $partner, null, $partner->toArray(), "Partner kreiran: {$partner->name}");
         });
 
         static::updated(function ($partner) {
@@ -42,12 +42,12 @@ class Partner extends Model
                 $oldValues = array_intersect_key($original, $changes);
                 $newValues = $changes;
 
-                History::log('updated', $partner, $oldValues, $newValues, 'Partner izmenjen');
+                History::log('updated', $partner, $oldValues, $newValues, "Partner izmenjen: {$partner->name}");
             }
         });
 
         static::deleted(function ($partner) {
-            History::log('deleted', $partner, $partner->toArray(), null, 'Partner obrisan');
+            History::log('deleted', $partner, $partner->toArray(), null, "Partner obrisan: {$partner->name}");
         });
     }
 
