@@ -28,6 +28,30 @@ class Partner extends Model
         'phone_number',
     ];
 
+    protected static function booted()
+    {
+        static::created(function ($partner) {
+            History::log('created', $partner, null, $partner->toArray(), 'Partner kreiran');
+        });
+
+        static::updated(function ($partner) {
+            $changes = $partner->getChanges();
+            $original = $partner->getOriginal();
+
+            // Only log if there are actual changes
+            if (!empty($changes)) {
+                $oldValues = array_intersect_key($original, $changes);
+                $newValues = $changes;
+
+                History::log('updated', $partner, $oldValues, $newValues, 'Partner izmenjen');
+            }
+        });
+
+        static::deleted(function ($partner) {
+            History::log('deleted', $partner, $partner->toArray(), null, 'Partner obrisan');
+        });
+    }
+
     /**
      * Get the invoices for the partner.
      *

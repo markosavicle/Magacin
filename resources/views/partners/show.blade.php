@@ -12,7 +12,7 @@
             <div class="bg-white shadow sm:rounded-lg p-6">
                 <h3 class="text-lg font-semibold text-gray-700 mb-2">Stanje</h3>
 
-                <div class="text-2xl font-bold 
+                <div class="text-2xl font-bold
                     {{ $balance > 0 ? 'text-green-600' : ($balance < 0 ? 'text-red-600' : 'text-gray-700') }}">
                     {{ number_format($balance, 2) }} RSD
                 </div>
@@ -22,13 +22,25 @@
                 </p>
             </div>
 
-            <!-- FAKTURE -->
-            <div class="bg-white shadow sm:rounded-lg overflow-x-auto">
-                <div class="p-6 border-b">
-                    <h3 class="text-lg font-semibold text-gray-700">Fakture</h3>
+            <!-- TABS -->
+            <div class="bg-white shadow sm:rounded-lg">
+                <!-- Tab Navigation -->
+                <div class="border-b border-gray-200">
+                    <nav class="-mb-px flex space-x-8 px-6" aria-label="Tabs">
+                        <button onclick="showTab('fakture')" class="tab-button border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="fakture">
+                            Fakture
+                        </button>
+                        <button onclick="showTab('transakcije')" class="tab-button border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="transakcije">
+                            Transakcije
+                        </button>
+                    </nav>
                 </div>
 
-                <table class="min-w-full divide-y divide-gray-200">
+                <!-- Tab Content -->
+                <div id="fakture-tab" class="tab-content">
+                    <!-- FAKTURE -->
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
                             @php
@@ -115,23 +127,26 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="3" class="text-center py-6 text-gray-500">
+                                <td colspan="4" class="text-center py-6 text-gray-500">
                                     Nema faktura
                                 </td>
                             </tr>
                         @endforelse
                     </tbody>
-                </table>
-            </div>
-
-            <!-- TRANSAKCIJE -->
-            <div class="bg-white shadow sm:rounded-lg overflow-x-auto">
-                <div class="p-6 border-b">
-                    <h3 class="text-lg font-semibold text-gray-700">Transakcije</h3>
+                        </table>
+                    </div>
                 </div>
 
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
+                <!-- TRANSAKCIJE TAB -->
+                <div id="transakcije-tab" class="tab-content hidden">
+                    <!-- TRANSAKCIJE -->
+                    <div class="overflow-x-auto">
+                        <div class="p-6 border-b">
+                            <h3 class="text-lg font-semibold text-gray-700">Transakcije</h3>
+                        </div>
+
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
                         <tr>
                             @php
                                 function getTransactionSortUrl($partner, $column) {
@@ -198,10 +213,41 @@
                                 </td>
                             </tr>
                         @endforelse
-                    </tbody>
-                </table>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- End of removed Istorija tab -->
             </div>
 
         </div>
     </div>
+
+    <script>
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+
+            // Remove active class from all tab buttons
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('border-indigo-500', 'text-indigo-600');
+                button.classList.add('border-transparent', 'text-gray-500');
+            });
+
+            // Show selected tab content
+            document.getElementById(tabName + '-tab').classList.remove('hidden');
+
+            // Add active class to selected tab button
+            document.querySelector(`[data-tab="${tabName}"]`).classList.remove('border-transparent', 'text-gray-500');
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('border-indigo-500', 'text-indigo-600');
+        }
+
+        // Show default tab (fakture) on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            showTab('fakture');
+        });
+    </script>
 </x-app-layout>
