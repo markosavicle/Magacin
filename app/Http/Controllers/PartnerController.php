@@ -24,9 +24,52 @@ class PartnerController extends Controller
         ];
     }
 
-   public function index()
+   public function index(Request $request)
 {
-    $partners = Partner::paginate(10); // 10 po stranici
+    $query = Partner::query();
+
+    // Search functionality
+    if ($request->has('search') && !empty(trim($request->search))) {
+        $search = trim(strtolower($request->search));
+        $query->where(function($q) use ($search) {
+            $q->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"])
+              ->orWhereRaw('LOWER(type) LIKE ?', ["%{$search}%"])
+              ->orWhereRaw('LOWER(email) LIKE ?', ["%{$search}%"])
+              ->orWhereRaw('LOWER(phone) LIKE ?', ["%{$search}%"])
+              ->orWhereRaw('LOWER(phone_number) LIKE ?', ["%{$search}%"])
+              ->orWhereRaw('LOWER(city) LIKE ?', ["%{$search}%"])
+              ->orWhereRaw('LOWER(contact_person) LIKE ?', ["%{$search}%"])
+              ->orWhereRaw('LOWER(vat_number) LIKE ?', ["%{$search}%"]);
+        });
+    }
+
+    // Filtering
+    if ($request->has('type') && !empty(trim($request->type))) {
+        $query->where('type', trim($request->type));
+    }
+
+    if ($request->has('city') && !empty(trim($request->city))) {
+        $query->where('city', trim($request->city));
+    }
+
+    // Sorting
+    $sortBy = $request->get('sort_by', 'name');
+    $sortDirection = $request->get('sort_direction', 'asc');
+
+    // Ensure sort_by is a valid column
+    $validSortColumns = ['name', 'type', 'email', 'phone', 'city', 'created_at'];
+    if (!in_array($sortBy, $validSortColumns)) {
+        $sortBy = 'name';
+    }
+
+    if (!in_array($sortDirection, ['asc', 'desc'])) {
+        $sortDirection = 'asc';
+    }
+
+    $query->orderBy($sortBy, $sortDirection);
+
+    $partners = $query->paginate(10)->appends($request->query());
+
     return view('partners.index', compact('partners'));
 }
 
@@ -61,10 +104,33 @@ public function destroy(Partner $partner)
     return redirect()->route('partners.index')->with('success', 'Partner obrisan!');
 }
 
-public function show(Partner $partner)
-{
-    $invoices = $partner->invoices()->latest()->get();
-    $transactions = $partner->transactions()->latest()->get();
+public function show(Request $request, Partner $partner)
+    {
+        // Sort invoices
+        $invoiceSortBy = $request->get('invoice_sort_by', 'created_at');
+        $invoiceSortDirection = $request->get('invoice_sort_direction', 'desc');
+        $validInvoiceSortColumns = ['invoice_number', 'type', 'amount', 'status', 'created_at'];
+        if (!in_array($invoiceSortBy, $validInvoiceSortColumns)) {
+            $invoiceSortBy = 'created_at';
+        }
+        if (!in_array($invoiceSortDirection, ['asc', 'desc'])) {
+            $invoiceSortDirection = 'desc';
+        }
+
+        $invoices = $partner->invoices()->orderBy($invoiceSortBy, $invoiceSortDirection)->get();
+
+        // Sort transactions
+        $transactionSortBy = $request->get('transaction_sort_by', 'created_at');
+        $transactionSortDirection = $request->get('transaction_sort_direction', 'desc');
+        $validTransactionSortColumns = ['type', 'amount', 'created_at'];
+        if (!in_array($transactionSortBy, $validTransactionSortColumns)) {
+            $transactionSortBy = 'created_at';
+        }
+        if (!in_array($transactionSortDirection, ['asc', 'desc'])) {
+            $transactionSortDirection = 'desc';
+        }
+
+        $transactions = $partner->transactions()->orderBy($transactionSortBy, $transactionSortDirection)->get();
 
     $balance = $partner->balance();
 

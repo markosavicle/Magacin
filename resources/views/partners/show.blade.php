@@ -31,10 +31,57 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Broj fakture</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tip</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Iznos</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                            @php
+                                function getInvoiceSortUrl($partner, $column) {
+                                    $currentSort = request('invoice_sort_by');
+                                    $currentDirection = request('invoice_sort_direction', 'desc');
+
+                                    if ($currentSort == $column) {
+                                        $newDirection = $currentDirection == 'asc' ? 'desc' : 'asc';
+                                    } else {
+                                        $newDirection = 'desc'; // Default to desc for invoices
+                                    }
+
+                                    return route('partners.show', array_merge([$partner], request()->query(), [
+                                        'invoice_sort_by' => $column,
+                                        'invoice_sort_direction' => $newDirection
+                                    ]));
+                                }
+
+                                function getInvoiceSortArrow($column) {
+                                    $currentSort = request('invoice_sort_by');
+                                    $currentDirection = request('invoice_sort_direction', 'desc');
+
+                                    if ($currentSort == $column) {
+                                        return $currentDirection == 'asc' ? '↑' : '↓';
+                                    }
+                                    return '';
+                                }
+                            @endphp
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                <a href="{{ getInvoiceSortUrl($partner, 'invoice_number') }}" class="hover:text-gray-700 flex items-center gap-1">
+                                    Broj fakture
+                                    <span class="text-xs">{{ getInvoiceSortArrow('invoice_number') }}</span>
+                                </a>
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                <a href="{{ getInvoiceSortUrl($partner, 'type') }}" class="hover:text-gray-700 flex items-center gap-1">
+                                    Tip
+                                    <span class="text-xs">{{ getInvoiceSortArrow('type') }}</span>
+                                </a>
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                <a href="{{ getInvoiceSortUrl($partner, 'amount') }}" class="hover:text-gray-700 flex items-center gap-1">
+                                    Iznos
+                                    <span class="text-xs">{{ getInvoiceSortArrow('amount') }}</span>
+                                </a>
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                <a href="{{ getInvoiceSortUrl($partner, 'status') }}" class="hover:text-gray-700 flex items-center gap-1">
+                                    Status
+                                    <span class="text-xs">{{ getInvoiceSortArrow('status') }}</span>
+                                </a>
+                            </th>
                         </tr>
                     </thead>
 
@@ -86,8 +133,45 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tip</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Iznos</th>
+                            @php
+                                function getTransactionSortUrl($partner, $column) {
+                                    $currentSort = request('transaction_sort_by');
+                                    $currentDirection = request('transaction_sort_direction', 'desc');
+
+                                    if ($currentSort == $column) {
+                                        $newDirection = $currentDirection == 'asc' ? 'desc' : 'asc';
+                                    } else {
+                                        $newDirection = 'desc'; // Default to desc for transactions
+                                    }
+
+                                    return route('partners.show', array_merge([$partner], request()->query(), [
+                                        'transaction_sort_by' => $column,
+                                        'transaction_sort_direction' => $newDirection
+                                    ]));
+                                }
+
+                                function getTransactionSortArrow($column) {
+                                    $currentSort = request('transaction_sort_by');
+                                    $currentDirection = request('transaction_sort_direction', 'desc');
+
+                                    if ($currentSort == $column) {
+                                        return $currentDirection == 'asc' ? '↑' : '↓';
+                                    }
+                                    return '';
+                                }
+                            @endphp
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                <a href="{{ getTransactionSortUrl($partner, 'type') }}" class="hover:text-gray-700 flex items-center gap-1">
+                                    Tip
+                                    <span class="text-xs">{{ getTransactionSortArrow('type') }}</span>
+                                </a>
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                <a href="{{ getTransactionSortUrl($partner, 'amount') }}" class="hover:text-gray-700 flex items-center gap-1">
+                                    Iznos
+                                    <span class="text-xs">{{ getTransactionSortArrow('amount') }}</span>
+                                </a>
+                            </th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Napomena</th>
                         </tr>
                     </thead>

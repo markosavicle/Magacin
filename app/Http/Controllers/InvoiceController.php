@@ -10,10 +10,66 @@ use Illuminate\Http\Request;
 
 class InvoiceController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $invoices = Invoice::with('partner')->paginate(10);
-        return view('invoices.index', compact('invoices'));
+        $query = Invoice::with('partner');
+
+        // Search functionality
+        if ($request->has('search') && !empty(trim($request->search))) {
+            $search = trim(strtolower($request->search));
+            $query->where(function($q) use ($search) {
+                $q->whereRaw('LOWER(invoice_number) LIKE ?', ["%{$search}%"])
+                  ->orWhereRaw('LOWER(note) LIKE ?', ["%{$search}%"])
+                  ->orWhereHas('partner', function($partnerQuery) use ($search) {
+                      $partnerQuery->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"]);
+                  });
+            });
+        }
+
+        // Filtering
+        if ($request->has('type') && !empty(trim($request->type))) {
+            $query->where('type', trim($request->type));
+        }
+
+        if ($request->has('status') && trim($request->status) !== '') {
+            $query->where('status', trim($request->status));
+        }
+
+        if ($request->has('partner_id') && !empty(trim($request->partner_id))) {
+            $query->where('partner_id', trim($request->partner_id));
+        }
+
+        // Date range filtering
+        if ($request->has('date_from') && !empty(trim($request->date_from))) {
+            $query->whereDate('date', '>=', trim($request->date_from));
+        }
+
+        if ($request->has('date_to') && !empty(trim($request->date_to))) {
+            $query->whereDate('date', '<=', trim($request->date_to));
+        }
+
+        // Sorting
+        $sortBy = $request->get('sort_by', 'date');
+        $sortDirection = $request->get('sort_direction', 'desc');
+
+        // Ensure sort_by is a valid column
+        $validSortColumns = ['invoice_number', 'date', 'amount', 'type', 'status', 'created_at'];
+        if (!in_array($sortBy, $validSortColumns)) {
+            $sortBy = 'date';
+        }
+
+        if (!in_array($sortDirection, ['asc', 'desc'])) {
+            $sortDirection = 'desc';
+        }
+
+        $query->orderBy($sortBy, $sortDirection);
+
+        $invoices = $query->paginate(10)->appends($request->query());
+
+        // Get partners for filter dropdown
+        $partners = Partner::orderBy('name')->get();
+
+        return view('invoices.index', compact('invoices', 'partners'));
     }
 
     public function create()
