@@ -38,6 +38,7 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Grad</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">PDV broj</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Kontakt osoba</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Broj telefona</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Akcije</th>                            
                         </tr>
                     </thead>
@@ -59,6 +60,7 @@
                             <td class="px-6 py-4 text-sm text-gray-900">{{ $partner->city }}</td>
                             <td class="px-6 py-4 text-sm text-gray-900">{{ $partner->vat_number }}</td>
                             <td class="px-6 py-4 text-sm text-gray-900">{{ $partner->contact_person }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-900">{{ $partner->phone_number }}</td>
 
                             <td class="px-6 py-4 text-sm flex gap-2">
                                 <!-- Edit -->

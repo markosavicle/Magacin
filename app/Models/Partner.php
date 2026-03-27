@@ -25,6 +25,7 @@ class Partner extends Model
         'city',
         'vat_number',
         'contact_person',
+        'phone_number',
     ];
 
     /**
