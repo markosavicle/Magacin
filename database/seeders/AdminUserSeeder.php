@@ -2,8 +2,11 @@
 
 namespace Database\Seeders;
 
+
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class AdminUserSeeder extends Seeder
 {
@@ -17,6 +20,8 @@ class AdminUserSeeder extends Seeder
             [
                 'name' => 'Marko',
                 'password' => Hash::make('qwe123qwe'),
+                'is_admin' => true,
+                'approved' => true,
             ]
         );
     }

@@ -24,6 +24,11 @@
                     <x-nav-link :href="route('history.index')" :active="request()->routeIs('history.*')">
                         {{ __('Istorija') }}
                     </x-nav-link>
+                    @if(Auth::user() && Auth::user()->is_admin)
+                        <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
+                            {{ __('Users') }}
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -91,6 +96,12 @@
             <x-responsive-nav-link :href="route('history.index')" :active="request()->routeIs('history.*')">
                 {{ __('Istorija') }}
             </x-responsive-nav-link>
+
+            @if(Auth::user() && Auth::user()->is_admin)
+                <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
+                    {{ __('Users') }}
+                </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->

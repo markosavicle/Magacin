@@ -50,6 +50,14 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        $user = Auth::user();
+        if (! $user->approved) {
+            Auth::logout();
+            throw ValidationException::withMessages([
+                'email' => 'Your account is not approved yet. Please wait for admin approval.'
+            ]);
+        }
+
         RateLimiter::clear($this->throttleKey());
     }
 

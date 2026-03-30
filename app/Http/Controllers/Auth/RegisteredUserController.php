@@ -40,12 +40,13 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'approved' => false,
         ]);
 
         event(new Registered($user));
 
-        Auth::login($user);
+        // Optionally notify admin here (implement notification logic)
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect()->route('login')->with('status', 'Registration submitted. Awaiting admin approval.');
     }
 }
