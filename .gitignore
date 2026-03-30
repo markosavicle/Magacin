@@ -53,3 +53,5 @@ auth.json
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+lang/vendor/backup/
