@@ -22,7 +22,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::resource('partners', PartnerController::class);
+    Route::get('partners/{partner}/export-pdf', [PartnerController::class, 'exportPdf'])->name('partners.exportPdf');
     Route::resource('invoices', InvoiceController::class);
+    Route::get('invoices/{invoice}/export-pdf', [InvoiceController::class, 'exportPdf'])->name('invoices.exportPdf');
     Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
 });
 

@@ -212,4 +212,11 @@ class InvoiceController extends Controller
     {
         return view('invoices.show', compact('invoice'));
     }
+
+    public function exportPdf(Invoice $invoice)
+    {
+        $pdf = app('dompdf.wrapper');
+        $pdf->loadView('invoices.pdf', compact('invoice'));
+        return $pdf->download('faktura_' . $invoice->invoice_number . '.pdf');
+    }
 }

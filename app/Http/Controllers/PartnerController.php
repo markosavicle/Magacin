@@ -140,4 +140,13 @@ public function show(Request $request, Partner $partner)
     ));
 }
 
+public function exportPdf(Partner $partner)
+{
+    // Get all invoices for this partner
+    $invoices = $partner->invoices()->orderBy('date', 'desc')->get();
+    $pdf = app('dompdf.wrapper');
+    $pdf->loadView('partners.pdf', compact('partner', 'invoices'));
+    return $pdf->download('partner_' . $partner->name . '.pdf');
+}
+
 }
