@@ -22,7 +22,6 @@
     <div class="section">
         <strong>Partner:</strong> {{ $invoice->partner->name }}<br>
         <strong>Tip:</strong> {{ $invoice->type == 'out' ? 'Izlazna' : 'Ulazna' }}<br>
-        <strong>Status:</strong> {{ $invoice->status ? 'Plaćeno' : 'Nije plaćeno' }}<br>
         <strong>Napomena:</strong> {{ $invoice->note }}
     </div>
     <div class="section">
