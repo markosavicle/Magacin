@@ -32,10 +32,6 @@ class InvoiceController extends Controller
             $query->where('type', trim($request->type));
         }
 
-        if ($request->has('status') && trim($request->status) !== '') {
-            $query->where('status', trim($request->status));
-        }
-
         if ($request->has('partner_id') && !empty(trim($request->partner_id))) {
             $query->where('partner_id', trim($request->partner_id));
         }
@@ -54,7 +50,7 @@ class InvoiceController extends Controller
         $sortDirection = $request->get('sort_direction', 'desc');
 
         // Ensure sort_by is a valid column
-        $validSortColumns = ['invoice_number', 'date', 'amount', 'type', 'status', 'created_at'];
+        $validSortColumns = ['invoice_number', 'date', 'amount', 'type', 'created_at'];
         if (!in_array($sortBy, $validSortColumns)) {
             $sortBy = 'date';
         }
@@ -84,7 +80,6 @@ class InvoiceController extends Controller
         $data = $request->validate([
             'partner_id' => 'required|exists:partners,id',
             'date' => 'required|date',
-            'status' => 'required|in:0,1',
             'note' => 'nullable|string|max:65535',
             'type' => 'required|in:in,out',
         ]);
@@ -138,8 +133,6 @@ class InvoiceController extends Controller
             'partner_id' => 'required|exists:partners,id',
             'invoice_number' => 'required|string|max:255|unique:invoices,invoice_number,' . $invoice->id,
             'date' => 'required|date',
-            //ako zelimo da menjamo iznos mauelno, nema potrebe racunamo sa proizvodima 'amount' => 'required|numeric|min:0',
-            'status' => 'required|in:0,1',
             'note' => 'nullable|string|max:65535',
             'type' => 'required|in:in,out',
         ]);

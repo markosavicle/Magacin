@@ -8,15 +8,11 @@ use App\Models\Partner;
 class Invoice extends Model
 {
 
-const STATUS_UNPAID = 0;
-const STATUS_PAID = 1;
-
 protected $fillable = [
     'partner_id',
     'invoice_number',
     'date',
     'amount',
-    'status',
     'note',
     'type',
 ]; 
@@ -32,7 +28,6 @@ public function items()
 }
 
 protected $casts = [
-    'status' => 'integer',
     'date' => 'date',
 ];
 

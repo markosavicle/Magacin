@@ -67,16 +67,6 @@
                         </select>
                     </div>
 
-                    <!-- Status Filter -->
-                    <div>
-                        <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
-                        <select name="status" id="status" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                            <option value="">Svi statusi</option>
-                            <option value="1">Plaćeno</option>
-                            <option value="0">Neplaćeno</option>
-                        </select>
-                    </div>
-
                     <!-- Partner Filter -->
                     <div>
                         <label for="partner_id" class="block text-sm font-medium text-gray-700">Partner</label>
@@ -172,12 +162,6 @@
                                     <span class="text-xs">{{ getSortArrow('type') }}</span>
                                 </a>
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                <a href="{{ getSortUrl('status') }}" class="hover:text-gray-700 flex items-center gap-1">
-                                    Status
-                                    <span class="text-xs">{{ getSortArrow('status') }}</span>
-                                </a>
-                            </th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Napomena</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                                 <a href="{{ getSortUrl('created_at') }}" class="hover:text-gray-700 flex items-center gap-1">
@@ -207,17 +191,6 @@
                             <td class="px-6 py-4 text-sm text-gray-900">
                                 {{ $invoice->type == 'out'? 'Faktura (izlazna)' : 'Faktura (ulazna)' }}
                             </td>
-                            <td class="px-6 py-4 text-sm">
-                                    @if($invoice->status == \App\Models\Invoice::STATUS_PAID)
-                                        <span class="px-2 py-1 text-xs font-semibold bg-green-100 text-green-700 rounded">
-                                            Plaćeno
-                                        </span>
-                                    @else
-                                        <span class="px-2 py-1 text-xs font-semibold bg-red-100 text-red-700 rounded">
-                                            Neplaćeno
-                                        </span>
-                                    @endif
-                                </td>
                             <td class="px-6 py-4 text-sm text-gray-900">{{ $invoice->note }}</td>
                             <td class="px-6 py-4 text-sm text-gray-900">{{ $invoice->created_at->format('d.m.Y') }}</td>
                             {{-- <td class="px-6 py-4 text-sm text-gray-900">
@@ -248,7 +221,7 @@
 
                         @if($invoices->isEmpty())
                         <tr>
-                            <td colspan="9" class="text-center py-6 text-gray-500">
+                            <td colspan="8" class="text-center py-6 text-gray-500">
                                 Nema unetih faktura
                             </td>
                         </tr>

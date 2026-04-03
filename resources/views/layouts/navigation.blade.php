@@ -21,6 +21,9 @@
                     <x-nav-link :href="route('invoices.index')" :active="request()->routeIs('invoices.*')">
                         {{ __('Fakture') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('transactions.index')" :active="request()->routeIs('transactions.*')">
+                        {{ __('Transakcije') }}
+                    </x-nav-link>
                     <x-nav-link :href="route('history.index')" :active="request()->routeIs('history.*')">
                         {{ __('Istorija') }}
                     </x-nav-link>
@@ -91,6 +94,10 @@
 
             <x-responsive-nav-link :href="route('invoices.index')" :active="request()->routeIs('invoices.*')">
                 {{ __('Fakture') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('transactions.index')" :active="request()->routeIs('transactions.*')">
+                {{ __('Transakcije') }}
             </x-responsive-nav-link>
 
             <x-responsive-nav-link :href="route('history.index')" :active="request()->routeIs('history.*')">

@@ -78,28 +78,26 @@ class Partner extends Model
      */
     public function balance()
     {
-        //out = fakture koje mi dajemo partneru, tj. koje partner duguje nama
-        $out = ($this->invoices()
+        // out = fakture koje mi dajemo partneru, tj. koje partner duguje nama
+        $out = $this->invoices()
             ->where('type', 'out')
-            ->where('status', 0)
-            ->sum('amount')) ?? 0;
+            ->sum('amount');
 
         // in = fakture koje partner daje nama, tj. koje mi dugujemo partneru
-        $in = ($this->invoices()
+        $in = $this->invoices()
             ->where('type', 'in')
-            ->where('status', 0)
-            ->sum('amount')) ?? 0;
+            ->sum('amount');
 
-        // payments = uplate koje je partner izvršio
-        $payments = ($this->transactions()
-            ->where('type', 'payment')
-            ->sum('amount')) ?? 0;
+        // uplata = uplate koje je partner izvršio (smanjuje dugovanje partnera)
+        $uplata = $this->transactions()
+            ->where('type', 'uplata')
+            ->sum('amount');
 
-        // credits = krediti koje smo dali partneru
-        $credits = ($this->transactions()
-            ->where('type', 'credit')
-            ->sum('amount')) ?? 0;
+        // isplata = isplate koje smo mi izvršili partneru (smanjuje naše dugovanje)
+        $isplata = $this->transactions()
+            ->where('type', 'isplata')
+            ->sum('amount');
 
-        return $out + $credits - $in - $payments;
+        return $out + $isplata - $in - $uplata;
     }
 }

@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PartnerController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\TransactionController;
 
 
 Route::get('/', function () {
@@ -25,6 +26,7 @@ Route::middleware('auth')->group(function () {
     Route::get('partners/{partner}/export-pdf', [PartnerController::class, 'exportPdf'])->name('partners.exportPdf');
     Route::resource('invoices', InvoiceController::class);
     Route::get('invoices/{invoice}/export-pdf', [InvoiceController::class, 'exportPdf'])->name('invoices.exportPdf');
+    Route::resource('transactions', TransactionController::class)->except(['show']);
     Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
 });
 

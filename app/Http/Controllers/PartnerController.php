@@ -107,7 +107,7 @@ public function show(Request $request, Partner $partner)
         // Sort invoices
         $invoiceSortBy = $request->get('invoice_sort_by', 'created_at');
         $invoiceSortDirection = $request->get('invoice_sort_direction', 'desc');
-        $validInvoiceSortColumns = ['invoice_number', 'type', 'amount', 'status', 'created_at'];
+        $validInvoiceSortColumns = ['invoice_number', 'date', 'type', 'amount', 'created_at'];
         if (!in_array($invoiceSortBy, $validInvoiceSortColumns)) {
             $invoiceSortBy = 'created_at';
         }
@@ -120,7 +120,7 @@ public function show(Request $request, Partner $partner)
         // Sort transactions
         $transactionSortBy = $request->get('transaction_sort_by', 'created_at');
         $transactionSortDirection = $request->get('transaction_sort_direction', 'desc');
-        $validTransactionSortColumns = ['type', 'amount', 'created_at'];
+        $validTransactionSortColumns = ['date', 'type', 'amount', 'created_at'];
         if (!in_array($transactionSortBy, $validTransactionSortColumns)) {
             $transactionSortBy = 'created_at';
         }
@@ -140,13 +140,46 @@ public function show(Request $request, Partner $partner)
     ));
 }
 
-public function exportPdf(Partner $partner)
+public function exportPdf(Request $request, Partner $partner)
 {
-    // Get all invoices for this partner
-    $invoices = $partner->invoices()->orderBy('date', 'desc')->get();
+    $invoiceQuery = $partner->invoices();
+    $transactionQuery = $partner->transactions();
+
+    $dateFrom = $request->get('date_from');
+    $dateTo = $request->get('date_to');
+
+    if ($dateFrom) {
+        $invoiceQuery->whereDate('date', '>=', $dateFrom);
+        $transactionQuery->whereDate('date', '>=', $dateFrom);
+    }
+    if ($dateTo) {
+        $invoiceQuery->whereDate('date', '<=', $dateTo);
+        $transactionQuery->whereDate('date', '<=', $dateTo);
+    }
+
+    $invoices = $invoiceQuery->get()->map(function ($inv) {
+        return (object) [
+            'date' => $inv->date,
+            'description' => ($inv->type === 'out' ? 'Faktura (izlazna)' : 'Faktura (ulazna)') . ' ' . $inv->invoice_number,
+            'zaduzenje' => $inv->type === 'out' ? $inv->amount : 0,
+            'razduzenje' => $inv->type === 'in' ? $inv->amount : 0,
+        ];
+    });
+
+    $transactions = $transactionQuery->get()->map(function ($t) {
+        return (object) [
+            'date' => $t->date,
+            'description' => ($t->type === 'uplata' ? 'Uplata' : 'Isplata') . ($t->note ? ' - ' . $t->note : ''),
+            'zaduzenje' => $t->type === 'isplata' ? $t->amount : 0,
+            'razduzenje' => $t->type === 'uplata' ? $t->amount : 0,
+        ];
+    });
+
+    $entries = $invoices->concat($transactions)->sortBy('date')->values();
+
     $pdf = app('dompdf.wrapper');
-    $pdf->loadView('partners.pdf', compact('partner', 'invoices'));
-    return $pdf->download('partner_' . $partner->name . '.pdf');
+    $pdf->loadView('partners.statement-pdf', compact('partner', 'entries', 'dateFrom', 'dateTo'));
+    return $pdf->download('izvod_' . $partner->name . '.pdf');
 }
 
 }

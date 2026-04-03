@@ -65,15 +65,6 @@
                         </select>
                     </div>
 
-                    <!-- Status -->
-                    <div class="mb-4">
-                        <x-input-label for="status" value="Status" />
-                        <select name="status" id="status" class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200">
-                            <option value="{{ \App\Models\Invoice::STATUS_UNPAID }}" {{ old('status', $invoice->status) == \App\Models\Invoice::STATUS_UNPAID ? 'selected' : '' }}>Neplaćeno</option>
-                            <option value="{{ \App\Models\Invoice::STATUS_PAID }}" {{ old('status', $invoice->status) == \App\Models\Invoice::STATUS_PAID ? 'selected' : '' }}>Plaćeno</option>
-                        </select>
-                    </div>
-
                     <!-- Note -->
                     <div class="mb-4">
                         <x-input-label for="note" value="Napomena" />
