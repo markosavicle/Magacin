@@ -157,7 +157,8 @@ public function exportPdf(Request $request, Partner $partner)
         $transactionQuery->whereDate('date', '<=', $dateTo);
     }
 
-    $invoices = $invoiceQuery->get()->map(function ($inv) {
+    // For statement table (entries)
+    $invoiceEntries = $invoiceQuery->get()->map(function ($inv) {
         return (object) [
             'date' => $inv->date,
             'description' => ($inv->type === 'out' ? 'Faktura (izlazna)' : 'Faktura (ulazna)') . ' ' . $inv->invoice_number,
@@ -165,6 +166,14 @@ public function exportPdf(Request $request, Partner $partner)
             'razduzenje' => $inv->type === 'in' ? $inv->amount : 0,
         ];
     });
+
+    // For invoice details section (with items)
+    $invoices = $partner->invoices()
+        ->with('items')
+        ->when($dateFrom, fn($q) => $q->whereDate('date', '>=', $dateFrom))
+        ->when($dateTo, fn($q) => $q->whereDate('date', '<=', $dateTo))
+        ->orderBy('date')
+        ->get();
 
     $transactions = $transactionQuery->get()->map(function ($t) {
         return (object) [
@@ -175,10 +184,10 @@ public function exportPdf(Request $request, Partner $partner)
         ];
     });
 
-    $entries = $invoices->concat($transactions)->sortBy('date')->values();
+    $entries = $invoiceEntries->concat($transactions)->sortBy('date')->values();
 
     $pdf = app('dompdf.wrapper');
-    $pdf->loadView('partners.statement-pdf', compact('partner', 'entries', 'dateFrom', 'dateTo'));
+    $pdf->loadView('partners.statement-pdf', compact('partner', 'entries', 'dateFrom', 'dateTo', 'invoices'));
     return $pdf->download('izvod_' . $partner->name . '.pdf');
 }
 

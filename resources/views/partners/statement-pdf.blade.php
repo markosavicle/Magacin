@@ -44,7 +44,7 @@
         @elseif($dateTo)
             Do: {{ Carbon::parse($dateTo)->format('d.m.Y') }}
         @else
-            Celokupan period
+            Celokupan period TEST KUR
         @endif
     </div>
 
@@ -113,5 +113,47 @@
     <div class="footer">
         Generisano: {{ Carbon::now()->format('d.m.Y H:i') }}
     </div>
+
+    <!-- INVOICE DETAILS SECTION -->
+    @if(isset($invoices) && count($invoices))
+        <div style="page-break-before: always;"></div>
+        <h3 style="margin-top:30px; margin-bottom:10px; font-size:15px;">Detalji po fakturama</h3>
+        @foreach($invoices as $invoice)
+            <div style="margin-bottom: 30px;">
+                <div style="font-weight:bold; font-size:13px; margin-bottom:2px;">
+                    Faktura #{{ $invoice->invoice_number }} &mdash; {{ Carbon::parse($invoice->date)->format('d.m.Y') }}
+                </div>
+                @if($invoice->note)
+                    <div style="margin-bottom:5px;"><strong>Napomena:</strong> {{ $invoice->note }}</div>
+                @endif
+                @if($invoice->items && count($invoice->items))
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Stavka</th>
+                            <th>Količina</th>
+                            <th>Cena</th>
+                            <th>Ukupno</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($invoice->items as $j => $item)
+                        <tr>
+                            <td>{{ $j+1 }}</td>
+                            <td>{{ $item->name }}</td>
+                            <td class="right">{{ $item->quantity }}</td>
+                            <td class="right">{{ number_format($item->price, 2) }} RSD</td>
+                            <td class="right">{{ number_format($item->total, 2) }} RSD</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                @else
+                    <div style="color:#999; font-size:11px;">Nema stavki za ovu fakturu.</div>
+                @endif
+            </div>
+        @endforeach
+    @endif
 </body>
 </html>

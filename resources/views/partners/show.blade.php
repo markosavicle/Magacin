@@ -21,21 +21,24 @@
                     {{ $balance > 0 ? 'Partner duguje vama' : ($balance < 0 ? 'Vi dugujete partneru' : 'Nema dugovanja') }}
                 </p>
 
-                <!-- Statement PDF Export with Date Filter -->
+                <!-- Statement PDF Export with Date Filter (Responsive & Styled) -->
                 <div class="mt-4">
-                    <form method="GET" action="{{ route('partners.exportPdf', $partner) }}" class="flex flex-wrap items-end gap-3">
-                        <div>
-                            <label for="date_from" class="block text-xs font-medium text-gray-500">Datum od</label>
-                            <input type="date" name="date_from" id="date_from" class="mt-1 block rounded-md border-gray-300 shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    <form method="GET" action="{{ route('partners.exportPdf', $partner) }}" class="max-w-md">
+                        <div class="flex flex-col sm:flex-row gap-3 sm:items-end">
+                            <div class="w-full sm:w-40">
+                                <label for="date_from" class="block text-xs font-medium text-gray-500">Datum od</label>
+                                <input type="date" name="date_from" id="date_from" class="mt-1 block w-full sm:w-40 rounded-md border-gray-300 shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            </div>
+                            <div class="w-full sm:w-40">
+                                <label for="date_to" class="block text-xs font-medium text-gray-500">Datum do</label>
+                                <input type="date" name="date_to" id="date_to" class="mt-1 block w-full sm:w-40 rounded-md border-gray-300 shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            </div>
+                            <button type="submit"
+                                class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 sm:py-0 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150 sm:h-[42px]">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                                Izvoz PDF
+                            </button>
                         </div>
-                        <div>
-                            <label for="date_to" class="block text-xs font-medium text-gray-500">Datum do</label>
-                            <input type="date" name="date_to" id="date_to" class="mt-1 block rounded-md border-gray-300 shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        </div>
-                        <x-secondary-button type="submit">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                            Izvoz PDF
-                        </x-secondary-button>
                     </form>
                 </div>
             </div>
@@ -57,6 +60,12 @@
                 <!-- Tab Content -->
                 <div id="fakture-tab" class="tab-content">
                     <!-- FAKTURE -->
+                    <div class="p-6 border-b flex items-center justify-between">
+                        <h3 class="text-lg font-semibold text-gray-700">Fakture</h3>
+                        <x-primary-link href="{{ route('invoices.create', ['partner_id' => $partner->id]) }}">
+                            Dodaj fakturu
+                        </x-primary-link>
+                    </div>
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
