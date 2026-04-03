@@ -15,21 +15,32 @@
                 </div>
             @endif
 
-            <!-- Add button and Toggle Filters -->
-            <div class="mb-4 flex justify-between items-center">
+            <!-- Add button and Toggle Filters (desktop) -->
+            <div class="mb-4 hidden sm:flex justify-between items-center">
                 <x-primary-link href="{{ route('partners.create') }}">
                     Dodaj novog partnera
                 </x-primary-link>
-
-                <!-- Toggle Filters Button -->
                 <button type="button" onclick="toggleFilters()" id="toggleFiltersBtn"
-                        class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"></path>
+                        class="bg-gray-500 hover:bg-gray-600 text-white rounded-md px-5 py-3 flex items-center gap-2 shadow transition-all duration-200 text-base font-semibold">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M8 12h8m-4 6h.01" />
                     </svg>
-                    <span id="toggleText">Prikaži opcije za sortiranje</span>
+                    <span>Filteri</span>
                 </button>
             </div>
+
+            <!-- Mobile Filter Button (above table, inline) -->
+            <div class="mb-4 sm:hidden flex items-center">
+                <button type="button" onclick="toggleFilters()" id="toggleFiltersBtnMobile"
+                    class="bg-gray-500 hover:bg-gray-600 text-white rounded-md px-5 py-3 flex items-center gap-2 shadow transition-all duration-200 text-base font-semibold">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M8 12h8m-4 6h.01" />
+                    </svg>
+                    <span>Filteri</span>
+                </button>
+            </div>
+
+
 
             <!-- Search and Filters (Hidden by default) -->
             <div id="filtersSection" class="mb-4 bg-white shadow sm:rounded-lg p-4 hidden">
@@ -208,6 +219,15 @@
         </div>
     </div>
 
+    <!-- Mobile Add Button (fixed bottom-right, proper circle) -->
+    <a href="{{ route('partners.create') }}" id="addPartnerBtnMobile"
+       class="sm:hidden fixed z-[9999] bg-indigo-600 hover:bg-indigo-700 text-white flex items-center justify-center shadow-lg"
+       style="bottom: 24px; right: 24px; width: 56px; height: 56px; border-radius: 50%;">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+        </svg>
+    </a>
+
     <script>
         function toggleFilters() {
             const filtersSection = document.getElementById('filtersSection');
@@ -215,10 +235,8 @@
 
             if (filtersSection.classList.contains('hidden')) {
                 filtersSection.classList.remove('hidden');
-                toggleText.textContent = 'Sakrij opcije za sortiranje';
             } else {
                 filtersSection.classList.add('hidden');
-                toggleText.textContent = 'Prikaži opcije za sortiranje';
             }
         }
     </script>

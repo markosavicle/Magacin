@@ -2,14 +2,25 @@
 <div class="py-12">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-        <!-- Toggle Filters Button -->
-        <div class="mb-4 flex justify-end">
+        <!-- Toggle Filters Button (desktop) -->
+        <div class="mb-4 hidden sm:flex justify-end">
             <button type="button" onclick="toggleFilters()" id="toggleFiltersBtn"
-                    class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 flex items-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"></path>
+                class="bg-gray-500 hover:bg-gray-600 text-white rounded-md px-5 py-3 flex items-center gap-2 shadow transition-all duration-200 text-base font-semibold">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M8 12h8m-4 6h.01" />
                 </svg>
-                <span id="toggleText">Prikaži opcije za sortiranje</span>
+                <span>Filteri</span>
+            </button>
+        </div>
+
+        <!-- Toggle Filters Button (mobile) -->
+        <div class="mb-4 sm:hidden flex items-center">
+            <button type="button" onclick="toggleFilters()" id="toggleFiltersBtnMobile"
+                class="bg-gray-500 hover:bg-gray-600 text-white rounded-md px-5 py-3 flex items-center gap-2 shadow transition-all duration-200 text-base font-semibold">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M8 12h8m-4 6h.01" />
+                </svg>
+                <span>Filteri</span>
             </button>
         </div>
 
@@ -162,10 +173,8 @@
 
         if (filtersSection.classList.contains('hidden')) {
             filtersSection.classList.remove('hidden');
-            toggleText.textContent = 'Sakrij opcije za sortiranje';
         } else {
             filtersSection.classList.add('hidden');
-            toggleText.textContent = 'Prikaži opcije za sortiranje';
         }
     }
 </script>

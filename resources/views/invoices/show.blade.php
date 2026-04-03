@@ -52,6 +52,38 @@
                 </div>
             </div>
 
+
+            <!-- Invoice Items Table -->
+            <div class="bg-white shadow sm:rounded-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-700 mb-4">Stavke fakture</h3>
+                @if($invoice->items->count())
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Naziv</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Količina</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cena</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ukupno</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            @foreach($invoice->items as $item)
+                            <tr>
+                                <td class="px-6 py-4 text-sm text-gray-900">{{ $item->name }}</td>
+                                <td class="px-6 py-4 text-sm text-gray-900">{{ $item->quantity }}</td>
+                                <td class="px-6 py-4 text-sm text-gray-900">{{ number_format($item->price, 2) }} RSD</td>
+                                <td class="px-6 py-4 text-sm text-gray-900">{{ number_format($item->total, 2) }} RSD</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                @else
+                    <div class="text-gray-500">Nema stavki za ovu fakturu.</div>
+                @endif
+            </div>
+
             <!-- Opcije / dugmad -->
             <div class="flex gap-2">
                 <x-primary-link href="{{ route('invoices.edit', $invoice) }}">

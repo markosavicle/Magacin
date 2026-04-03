@@ -18,12 +18,22 @@
                     <h3 class="text-lg font-semibold">Svi korisnici</h3>
                     <!-- Toggle Filters Button -->
                     <button type="button" onclick="toggleUserFilters()" id="toggleUserFiltersBtn"
-                            class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"></path>
+                        class="bg-gray-500 hover:bg-gray-600 text-white rounded-md px-5 py-3 flex items-center gap-2 shadow transition-all duration-200 text-base font-semibold">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M8 12h8m-4 6h.01" />
                         </svg>
-                        <span id="toggleUserFiltersText">Prikaži opcije za filtriranje</span>
+                        <span id="toggleUserFiltersText">Filteri</span>
                     </button>
+                <script>
+                function toggleUserFilters() {
+                    const section = document.getElementById('userFiltersSection');
+                    if (section.classList.contains('hidden')) {
+                        section.classList.remove('hidden');
+                    } else {
+                        section.classList.add('hidden');
+                    }
+                }
+                </script>
                 </div>
                 <!-- Search, Filter, Sort -->
                 <form method="GET" action="{{ route('users.index') }}" id="userFiltersSection" class="mb-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 hidden">
@@ -56,15 +66,13 @@
                 <script>
                 function toggleUserFilters() {
                     const section = document.getElementById('userFiltersSection');
-                    const btn = document.getElementById('toggleUserFiltersBtn');
                     const text = document.getElementById('toggleUserFiltersText');
                     if (section.classList.contains('hidden')) {
                         section.classList.remove('hidden');
-                        text.textContent = 'Sakrij opcije za filtriranje';
                     } else {
                         section.classList.add('hidden');
-                        text.textContent = 'Prikaži opcije za filtriranje';
                     }
+                    if (text) text.textContent = 'Filteri';
                 }
                 </script>
 
