@@ -11,6 +11,10 @@ class UserController extends Controller
 {
     public function index(): View
     {
+        if (!Auth::user() || !Auth::user()->is_admin) {
+            abort(403);
+        }
+
         $query = User::query();
 
         // Search
@@ -35,6 +39,12 @@ class UserController extends Controller
         // Sort
         $sortBy = request('sort_by', 'name');
         $sortDirection = request('sort_direction', 'asc');
+        if (!in_array($sortBy, ['name', 'email', 'approved', 'is_admin', 'created_at'])) {
+            $sortBy = 'name';
+        }
+        if (!in_array($sortDirection, ['asc', 'desc'])) {
+            $sortDirection = 'asc';
+        }
         $query->orderBy($sortBy, $sortDirection);
 
         $users = $query->get();
