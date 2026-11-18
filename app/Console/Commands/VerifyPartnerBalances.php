@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Invoice;
 use App\Models\Partner;
 use Illuminate\Console\Command;
 
@@ -9,7 +10,7 @@ class VerifyPartnerBalances extends Command
 {
     protected $signature = 'partners:verify-balances {--partner= : Verify a specific partner by ID}';
 
-    protected $description = 'Recalculate and verify partner balances from source data';
+    protected $description = 'Recalculate partner balances from source data and check that every invoice total matches its line items';
 
     public function handle(): int
     {
@@ -65,6 +66,42 @@ class VerifyPartnerBalances extends Command
             $this->error('Some partner balances have mismatches!');
         }
 
-        return $allOk ? 0 : 1;
+        $invoicesOk = $this->verifyInvoiceTotals($partners->pluck('id')->all());
+
+        return $allOk && $invoicesOk ? 0 : 1;
+    }
+
+    /**
+     * An invoice's amount is what the balance uses, so it must equal the sum of its line items.
+     * Invoices without items (entered as a single amount) are skipped.
+     *
+     * @param  list<int>  $partnerIds
+     */
+    private function verifyInvoiceTotals(array $partnerIds): bool
+    {
+        $mismatches = Invoice::query()
+            ->whereIn('partner_id', $partnerIds)
+            ->has('items')
+            ->withSum('items', 'total')
+            ->get()
+            ->filter(fn (Invoice $invoice) => abs((float) $invoice->amount - (float) $invoice->items_sum_total) >= 0.01);
+
+        if ($mismatches->isEmpty()) {
+            $this->info('All invoice totals match their line items.');
+            return true;
+        }
+
+        $this->table(
+            ['Faktura', 'Partner ID', 'Iznos', 'Zbir stavki'],
+            $mismatches->map(fn (Invoice $invoice) => [
+                $invoice->invoice_number,
+                $invoice->partner_id,
+                number_format((float) $invoice->amount, 2),
+                number_format((float) $invoice->items_sum_total, 2),
+            ])->all()
+        );
+        $this->error("{$mismatches->count()} invoice(s) do not match their line items!");
+
+        return false;
     }
 }
