@@ -123,4 +123,20 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | First admin account
+    |--------------------------------------------------------------------------
+    |
+    | Used by Database\Seeders\AdminUserSeeder to create the first admin on a fresh
+    | database. Never commit real values: set them in .env on the server.
+    |
+    */
+
+    'admin' => [
+        'email' => env('ADMIN_EMAIL'),
+        'password' => env('ADMIN_PASSWORD'),
+        'name' => env('ADMIN_NAME', 'Admin'),
+    ],
+
 ];
