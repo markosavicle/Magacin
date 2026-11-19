@@ -35,7 +35,7 @@ jobs:
 
       - name: Demo data is seeded and balances are consistent
         run: |
-          partners=$(docker compose exec -T app php artisan tinker --execute='echo App\Models\Partner::count();')
+          partners=$(docker compose exec -T db sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -tAc "select count(*) from partners"')
           echo "Partners: $partners"
           test "$partners" = "12"
           make verify
@@ -44,8 +44,11 @@ jobs:
         run: |
           docker compose restart app
           make up
-          partners=$(docker compose exec -T app php artisan tinker --execute='echo App\Models\Partner::count();')
+          partners=$(docker compose exec -T db sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -tAc "select count(*) from partners"')
           test "$partners" = "12"
+
+      - name: Artisan tinker works in the app container
+        run: docker compose exec -T app php artisan tinker --execute='echo App\Models\Invoice::count();'
 
       - name: Scheduler is running
         run: docker compose exec -T scheduler php artisan schedule:list

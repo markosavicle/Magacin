@@ -59,6 +59,8 @@ RUN composer dump-autoload --optimize --classmap-authoritative --no-dev \
  && chown -R www-data:www-data storage bootstrap/cache
 
 COPY --chmod=0755 docker/php/entrypoint.sh /usr/local/bin/magacin-entrypoint
+# www-data's home (/var/www) is not writable; tinker/psysh keeps its config and history here instead.
+ENV XDG_CONFIG_HOME=/tmp/.config XDG_DATA_HOME=/tmp/.local/share XDG_RUNTIME_DIR=/tmp
 USER www-data
 ENTRYPOINT ["magacin-entrypoint"]
 CMD ["php-fpm"]
