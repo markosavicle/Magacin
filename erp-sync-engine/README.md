@@ -2,6 +2,8 @@
 
 A small command-line tool that reads a stock or price list export from an ERP (CSV or XML) and brings a webshop in line with it: stock quantities and prices, for WooCommerce or Magento 2. It is built for the way Serbian ERP exports usually look: Windows-1250 or UTF-8, `;` as the separator, `1.234,56` numbers, one row per warehouse, prices with or without VAT.
 
+> **Not a plug-and-play ERP module.** It is a tested base to adapt to one client's actual ERP export, not a finished connector for Pantheon, Navision/Business Central, Calculus or any other ERP. The example exports and their column names are illustrative and fictional.
+
 It is a starting point for an integration, not a finished connector for any particular ERP. Every export is a little different, so the columns, warehouses, VAT handling and rounding are set in a TOML file per client, and a new client is usually a new mapping file plus a dry run against their real export.
 
 ## What it does
@@ -52,7 +54,7 @@ Credentials are read only from environment variables, never from the config file
 
 Updates go in batches (`batch_size`, default 50). Rate limits (429) and gateway errors are retried with backoff. WooCommerce gets `regular_price`; sale prices are left alone. Magento configurable, bundle and grouped parents are skipped, their simple children are synced.
 
-Example mappings: [`examples/pantheon-woocommerce.toml`](examples/pantheon-woocommerce.toml) (CSV, wholesale prices without VAT, two warehouses) and [`examples/calculus-magento.toml`](examples/calculus-magento.toml) (XML, retail prices with VAT, MSI). The column names follow typical Pantheon and Calculus reports but are illustrative: check them against the client's actual export.
+Example mappings: [`examples/navision-demo.toml`](examples/navision-demo.toml) (Business Central-style item list, offline demo), [`examples/pantheon-woocommerce.toml`](examples/pantheon-woocommerce.toml) (CSV, wholesale prices without VAT, two warehouses) and [`examples/calculus-magento.toml`](examples/calculus-magento.toml) (XML, retail prices with VAT, MSI). The column names follow typical Pantheon, Navision and Calculus reports but are illustrative: check them against the client's actual export.
 
 ## Config reference
 
@@ -114,7 +116,7 @@ Or with the Dockerfile in this folder: `docker build -t erp-sync .` then `docker
 pytest
 ```
 
-35 tests, no network: number and encoding parsing, warehouse aggregation, XML paths, VAT and rounding, the price guard, the full CLI against the JSON demo shop (dry run writes nothing, apply is idempotent), and the WooCommerce and Magento adapters against fake APIs (pagination, variations, batch payloads, per-item errors, MSI and legacy stock, retry on 429).
+36 tests, no network: number and encoding parsing, warehouse aggregation, XML paths, VAT and rounding, the price guard, the full CLI against the JSON demo shop (dry run writes nothing, apply is idempotent), and the WooCommerce and Magento adapters against fake APIs (pagination, variations, batch payloads, per-item errors, MSI and legacy stock, retry on 429).
 
 ## Layout
 
@@ -130,4 +132,4 @@ examples/                demo export, demo shop, mappings for WooCommerce and Ma
 
 ---
 
-**Ukratko (SR):** Alat komandne linije koji iz izvoza ERP-a (CSV ili XML, Windows-1250 ili UTF-8, decimalni zarez) usklađuje zalihe i cene u WooCommerce ili Magento 2 prodavnici. Sabira zalihe po magacinima koje izaberete, preračunava PDV i zaokružuje cene, zadržava sigurnosnu zalihu, menja samo ono što se razlikuje i podrazumevano radi „na suvo" dok ne dodate `--apply`. Sumnjive promene cena (preko zadatog procenta ili cena 0) ne primenjuje nego ih prijavljuje. Za svakog klijenta se pravi poseban TOML fajl sa mapiranjem kolona. Primeri izvoza i demo prodavnica su izmišljeni.
+**Ukratko (SR):** Alat komandne linije koji iz izvoza ERP-a (CSV ili XML, Windows-1250 ili UTF-8, decimalni zarez) usklađuje zalihe i cene u WooCommerce ili Magento 2 prodavnici. Sabira zalihe po magacinima koje izaberete, preračunava PDV i zaokružuje cene, zadržava sigurnosnu zalihu, menja samo ono što se razlikuje i podrazumevano radi „na suvo" dok ne dodate `--apply`. Sumnjive promene cena (preko zadatog procenta ili cena 0) ne primenjuje nego ih prijavljuje. Za svakog klijenta se pravi poseban TOML fajl sa mapiranjem kolona. Ovo nije gotov „plug-and-play" modul za određeni ERP, nego testirana osnova koja se prilagođava konkretnom izvozu klijenta. Primeri izvoza i demo prodavnica su izmišljeni.

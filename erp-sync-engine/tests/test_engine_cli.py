@@ -79,3 +79,11 @@ def test_cli_requires_credentials_from_env(demo, monkeypatch, capsys):
     code = main(["run", "-c", str(demo / "pantheon-woocommerce.toml"), "-f", str(demo / "pantheon_zalihe.csv")])
     assert code == 1
     assert "WOO_CONSUMER_KEY" in capsys.readouterr().err
+
+
+def test_navision_example_parses_and_plans(demo, capsys):
+    args = ["run", "-c", str(demo / "navision-demo.toml"), "-f", str(demo / "navision_artikli.csv")]
+    assert main(args) == 0
+    out = capsys.readouterr().out
+    assert "7 rows, 5 SKUs, 0 rows with errors" in out
+    assert "980 -> 1302" in out             # 1.180 + 124 across two locations, minus the 2-unit buffer

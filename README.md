@@ -6,6 +6,8 @@ A web app for a small wholesaler or distributor to keep partners, incoming and o
 
 **Stack:** PHP 8.4, Laravel 13, Blade + Tailwind (Breeze), dompdf, spatie/laravel-backup, PostgreSQL (SQLite for tests), Docker.
 
+**Scope.** Magacin is the wholesale back office: partners, invoices, payments, balances and PDFs. It does not track items or stock. The separate [`erp-sync-engine/`](erp-sync-engine/) folder shows the other half of a typical integration: syncing stock and prices from an ERP export to a webshop. It is a base to adapt per client, not a plug-and-play ERP module.
+
 ## At a glance
 
 **Problem.** A distributor tracks customers, suppliers, invoices and payments in Excel. Balances are worked out by hand, statements are assembled before every call with a customer, and nobody can tell who changed a number or when.

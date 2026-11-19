@@ -1,0 +1,8 @@
+﻿No.;Description;Location Code;Inventory;Unit Price;VAT Prod. Posting Group
+MLK-28-1L;Mleko 2,8% 1l;NIS-VP;1.180;112,50;PDV10
+MLK-28-1L;Mleko 2,8% 1l;NIS-MP;124;112,50;PDV10
+JOG-15-15L;Jogurt 1,5l;NIS-MP;36;179,17;PDV10
+PIVO-05-LIM;Pivo 0,5l limenka;NIS-VP;2.304;95,83;PDV20
+KAFA-500;Kafa mlevena 500g;NIS-VP;75;816,67;PDV20
+KAFA-500;Kafa mlevena 500g;LES-KOMIS;10;816,67;PDV20
+VODA-NG-15;Voda negazirana 1,5l;NIS-VP;864;54,17;PDV20
