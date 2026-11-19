@@ -1,0 +1,35 @@
+# Same Pantheon-style export, written to a real WooCommerce shop.
+# Credentials come only from the environment:
+#   export WOO_CONSUMER_KEY=ck_...  WOO_CONSUMER_SECRET=cs_...
+#   erp-sync run -c examples/pantheon-woocommerce.toml -f zalihe.csv              (dry run)
+#   erp-sync run -c examples/pantheon-woocommerce.toml -f zalihe.csv --apply -r izvestaj.csv
+
+[source]
+format = "csv"
+delimiter = ";"
+decimal_separator = ","
+
+[columns]
+sku = "Ident"
+name = "Naziv"
+warehouse = "Skladište"
+stock = "Zaliha"
+price = "VP cena"
+vat_rate = "Stopa PDV"
+
+[filters]
+warehouses = ["MP Niš", "VP Niš - Medoševac"]
+
+[prices]
+source_includes_vat = false
+target_includes_vat = true
+round_to = "1"
+max_change_percent = 30
+
+[stock]
+safety_buffer = 0
+
+[target]
+type = "woocommerce"
+url = "https://shop.example.rs"
+batch_size = 50

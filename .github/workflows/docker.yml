@@ -1,0 +1,65 @@
+name: Docker
+
+# Builds the Docker images, starts the full stack the way `make demo` does, checks that the app
+# answers and the demo data is consistent, then runs the test suite inside the test image.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: docker-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  demo-stack:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: make demo
+        run: make demo
+
+      - name: App answers through Nginx
+        run: |
+          curl -fsS -o /dev/null -w 'GET /up -> %{http_code}\n' http://localhost:8080/up
+          curl -fsS http://localhost:8080/login | grep -q 'name="password"'
+          echo "Login page renders."
+
+      - name: Demo data is seeded and balances are consistent
+        run: |
+          partners=$(docker compose exec -T db sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -tAc "select count(*) from partners"')
+          echo "Partners: $partners"
+          test "$partners" = "12"
+          make verify
+
+      - name: Restart keeps data and does not reseed
+        run: |
+          docker compose restart app
+          make up
+          partners=$(docker compose exec -T db sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -tAc "select count(*) from partners"')
+          test "$partners" = "12"
+
+      - name: Artisan tinker works in the app container
+        run: docker compose exec -T app php artisan tinker --execute='echo App\Models\Invoice::count();'
+
+      - name: Scheduler is running
+        run: docker compose exec -T scheduler php artisan schedule:list
+
+      - name: Tests inside the container
+        run: make test
+
+      - name: Logs on failure
+        if: failure()
+        run: docker compose logs --no-color --tail=200
+
+      - name: Clean up
+        if: always()
+        run: docker compose --profile tools down -v --remove-orphans

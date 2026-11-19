@@ -1,0 +1,36 @@
+# Navision / Business Central-style item list (UTF-8 with BOM, ';', decimal comma) -> demo shop.
+# Field names follow the standard Item card (No., Location Code, Unit Price); the client's export
+# view will differ, so treat this as a template to adjust, not a ready connector.
+#   erp-sync run -c examples/navision-demo.toml -f examples/navision_artikli.csv
+#
+# The VAT posting group ("PDV10") is a code, not a number, so it is not mapped: every price here gets
+# default_vat_rate. When an export mixes rates, add a numeric VAT % column to the export view.
+
+[source]
+format = "csv"
+delimiter = ";"
+decimal_separator = ","
+
+[columns]
+sku = "No."
+name = "Description"
+warehouse = "Location Code"
+stock = "Inventory"
+price = "Unit Price"
+
+[filters]
+warehouses = ["NIS-VP", "NIS-MP"]
+
+[prices]
+source_includes_vat = false
+target_includes_vat = true
+default_vat_rate = 20
+round_to = "1"
+max_change_percent = 30
+
+[stock]
+safety_buffer = 2
+
+[target]
+type = "jsonfile"
+path = "shop_demo.json"

@@ -1,0 +1,115 @@
+# Magacin: full stack for local demos and small self-hosted installs.
+#   make demo                  (or: ./setup.sh demo, or: docker compose up --build -d)
+#   http://localhost:8080      the admin login is printed by `make admin` and in the app logs
+#
+# No .env is required: missing values fall back to local defaults, and the APP_KEY and admin
+# password are generated on first start. `make env` / `./setup.sh env` writes a .env with random
+# DB and admin passwords if you want to choose or keep them yourself.
+
+name: magacin
+
+x-app-env: &app-env
+  APP_NAME: Magacin
+  # DOCKER_* names so the APP_ENV=local / APP_DEBUG=true meant for running without Docker
+  # in the same .env do not leak into the containers.
+  APP_ENV: ${DOCKER_APP_ENV:-production}
+  APP_DEBUG: ${DOCKER_APP_DEBUG:-false}
+  APP_KEY: ${APP_KEY:-}
+  APP_URL: ${DOCKER_APP_URL:-http://localhost:${APP_PORT:-8080}}
+  APP_LOCALE: ${APP_LOCALE:-en}
+  LOG_CHANNEL: stderr
+  LOG_LEVEL: ${LOG_LEVEL:-info}
+  DB_CONNECTION: pgsql
+  DB_HOST: db
+  DB_PORT: 5432
+  DB_DATABASE: ${DB_DATABASE:-magacin}
+  DB_USERNAME: ${DB_USERNAME:-magacin}
+  DB_PASSWORD: ${DB_PASSWORD:-local-only-not-exposed}
+  SESSION_DRIVER: database
+  CACHE_STORE: database
+  QUEUE_CONNECTION: database
+  MAIL_MAILER: ${MAIL_MAILER:-log}
+  ADMIN_EMAIL: ${ADMIN_EMAIL:-}
+  ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+  ADMIN_NAME: ${ADMIN_NAME:-Admin}
+
+x-app-build: &app-build
+  context: .
+  dockerfile: docker/php/Dockerfile
+
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-magacin}
+      POSTGRES_USER: ${DB_USERNAME:-magacin}
+      # The fallback is only for a quick local start: the port is not published, so Postgres is
+      # reachable only from the containers below. setup.sh writes a random one into .env.
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-local-only-not-exposed}
+      TZ: Europe/Belgrade
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+  app:
+    build: { <<: *app-build, target: app }
+    image: magacin-app:local
+    restart: unless-stopped
+    environment:
+      <<: *app-env
+      CONTAINER_ROLE: app
+      SEED_DEMO: ${SEED_DEMO:-true}
+    volumes:
+      - storage:/var/www/html/storage
+    depends_on:
+      db: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /tmp/magacin-ready"]
+      interval: 3s
+      timeout: 3s
+      retries: 100
+      start_period: 10s
+
+  scheduler:
+    build: { <<: *app-build, target: app }
+    image: magacin-app:local
+    restart: unless-stopped
+    environment:
+      <<: *app-env
+      CONTAINER_ROLE: scheduler
+    command: ["php", "artisan", "schedule:work"]   # nightly backup 02:00, balance check 02:30
+    volumes:
+      - storage:/var/www/html/storage
+    depends_on:
+      app: { condition: service_healthy }
+
+  web:
+    build: { <<: *app-build, target: web }
+    image: magacin-web:local
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-8080}:80"
+    depends_on:
+      app: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/up >/dev/null || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  # Test suite in a container (SQLite in memory, same as CI): `make test`
+  tests:
+    build: { <<: *app-build, target: test }
+    image: magacin-test:local
+    profiles: ["tools"]
+    environment:
+      APP_KEY: base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=   # test-only key, never serves traffic
+
+volumes:
+  db-data:
+  storage:

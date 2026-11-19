@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Calculus-style price list export. Illustrative layout: real exports differ per installation,
+     which is what the [columns] mapping is for. All data is fictional. -->
+<Cenovnik datum="2026-11-19" objekat="Magacin Niš">
+  <Artikal sifra="MLK-28-1L"><Naziv>Mleko 2,8% 1l</Naziv><Stanje>1304</Stanje><Cena><MPC>135,00</MPC><PDV>10</PDV></Cena></Artikal>
+  <Artikal sifra="JOG-15-15L"><Naziv>Jogurt 1,5l</Naziv><Stanje>36</Stanje><Cena><MPC>215,00</MPC><PDV>10</PDV></Cena></Artikal>
+  <Artikal sifra="SIR-BELI-1KG"><Naziv>Sir beli 1kg</Naziv><Stanje>42,5</Stanje><Cena><MPC>890,00</MPC><PDV>10</PDV></Cena></Artikal>
+  <Artikal sifra="PIVO-05-LIM"><Naziv>Pivo 0,5l limenka</Naziv><Stanje>2304</Stanje><Cena><MPC>115,00</MPC><PDV>20</PDV></Cena></Artikal>
+  <Artikal sifra="VINO-CR-075"><Naziv>Vino crveno 0,75l</Naziv><Stanje>0</Stanje><Cena><MPC>690,00</MPC><PDV>20</PDV></Cena></Artikal>
+  <Artikal sifra="KAFA-500"><Naziv>Kafa mlevena 500g</Naziv><Stanje>85</Stanje><Cena><MPC>980,00</MPC><PDV>20</PDV></Cena></Artikal>
+</Cenovnik>
