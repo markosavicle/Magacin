@@ -1,0 +1,27 @@
+# Calculus-style XML price list -> Magento 2 with MSI.
+#   export MAGENTO_TOKEN=...   (System > Integrations > access token)
+#   erp-sync run -c examples/calculus-magento.toml -f cenovnik.xml
+
+[source]
+format = "xml"
+decimal_separator = ","
+record_path = ".//Artikal"
+
+[columns]
+sku = "@sifra"          # attribute on <Artikal>
+name = "Naziv"
+stock = "Stanje"
+price = "Cena/MPC"      # retail price with VAT
+vat_rate = "Cena/PDV"
+
+[prices]
+source_includes_vat = true
+target_includes_vat = true
+round_to = "0.01"
+max_change_percent = 25
+
+[target]
+type = "magento"
+url = "https://magento.example.rs"
+inventory = "msi"       # or "legacy" for shops without Multi-Source Inventory
+source_code = "default"

@@ -1,0 +1,65 @@
+{
+  "_comment": "Demo webshop catalog for target.type = jsonfile. Fictional products and prices (RSD, VAT included).",
+  "products": [
+    {
+      "sku": "MLK-28-1L",
+      "name": "Mleko 2,8% 1l",
+      "stock": 980,
+      "price": 129.0
+    },
+    {
+      "sku": "JOG-15-15L",
+      "name": "Jogurt 1,5l",
+      "stock": 36,
+      "price": 215.0
+    },
+    {
+      "sku": "SIR-BELI-1KG",
+      "name": "Sir beli 1kg",
+      "stock": 50,
+      "price": 849.0
+    },
+    {
+      "sku": "PIVO-05-LIM",
+      "name": "Pivo 0,5l limenka",
+      "stock": 2000,
+      "price": 115.0
+    },
+    {
+      "sku": "VINO-CR-075",
+      "name": "Vino crveno 0,75l",
+      "stock": 12,
+      "price": 690.0
+    },
+    {
+      "sku": "VODA-NG-15",
+      "name": "Voda negazirana 1,5l",
+      "stock": 900,
+      "price": 65.0
+    },
+    {
+      "sku": "VODA-G-15",
+      "name": "Voda gazirana 1,5l",
+      "stock": 600,
+      "price": 70.0
+    },
+    {
+      "sku": "SOK-JAB-1L",
+      "name": "Sok od jabuke 1l",
+      "stock": 300,
+      "price": 129.0
+    },
+    {
+      "sku": "KAFA-500",
+      "name": "Kafa mlevena 500g",
+      "stock": 90,
+      "price": 980.0
+    },
+    {
+      "sku": "POKLON-PAKET",
+      "name": "Poklon paket (samo webshop)",
+      "stock": 15,
+      "price": 2490.0
+    }
+  ]
+}

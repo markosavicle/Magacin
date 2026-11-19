@@ -1,0 +1,38 @@
+# Pantheon-style CSV (Windows-1250, ';', decimal comma) -> demo shop in a JSON file.
+# Column names follow a typical Pantheon stock report; check them against the client's actual export.
+#   erp-sync run -c examples/pantheon-demo.toml -f examples/pantheon_zalihe.csv
+
+[source]
+format = "csv"
+encoding = "auto"          # UTF-8 if it decodes, otherwise Windows-1250
+delimiter = ";"
+decimal_separator = ","
+
+[columns]
+sku = "Ident"
+name = "Naziv"
+warehouse = "Skladište"
+stock = "Zaliha"
+price = "VP cena"          # wholesale price without VAT
+vat_rate = "Stopa PDV"
+
+[filters]
+# Only stock in our own warehouses is sellable online; consignment stock is not.
+warehouses = ["MP Niš", "VP Niš - Medoševac"]
+skip_sku_prefixes = ["OTPIS-"]
+
+[prices]
+update = true
+source_includes_vat = false   # VP cena is without VAT
+target_includes_vat = true    # the shop shows prices with VAT
+round_to = "1"                # whole dinars
+max_change_percent = 30
+
+[stock]
+update = true
+safety_buffer = 2             # keep 2 units back for walk-in customers
+missing_in_erp = "ignore"     # products that exist only in the shop are left alone
+
+[target]
+type = "jsonfile"
+path = "shop_demo.json"       # relative to this config file
