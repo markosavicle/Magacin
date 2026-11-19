@@ -47,3 +47,28 @@ jobs:
 
       - name: Run tests
         run: php artisan test
+
+  erp-sync-engine:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: erp-sync-engine
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install
+        run: pip install -e '.[dev]'
+
+      - name: Run tests
+        run: pytest -q
+
+      - name: Demo sync (dry run, then apply, then nothing left to do)
+        run: |
+          erp-sync run -c examples/pantheon-demo.toml -f examples/pantheon_zalihe.csv || test $? -eq 4
+          erp-sync run -c examples/pantheon-demo.toml -f examples/pantheon_zalihe.csv --apply || test $? -eq 4
+          erp-sync run -c examples/pantheon-demo.toml -f examples/pantheon_zalihe.csv | tee out.txt || true
+          grep -q "0 products to update" out.txt

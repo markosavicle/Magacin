@@ -31,7 +31,29 @@ php artisan partners:verify-balances --partner=3
 
 It recalculates every partner's balance from the raw invoices and payments, and checks that every invoice's amount equals the sum of its line items, so a total edited outside the app is caught. It exits with status 1 on any mismatch, so it can gate a deploy or alert from cron. It runs nightly through the scheduler.
 
-## Run it
+## Run it with Docker (one command)
+
+Needs Docker Desktop (Windows/macOS) or Docker Engine with Compose v2 (Linux).
+
+```bash
+make demo          # or ./setup.sh demo (Git Bash/WSL on Windows), or docker compose up --build -d
+```
+
+This builds the images, starts Postgres 17, PHP-FPM 8.4, Nginx and the scheduler, runs the migrations, creates the admin and loads the fictional demo data. It prints the URL (http://localhost:8080) and the admin login. No password is hardcoded anywhere: `setup.sh` writes a `.env` with a random DB and admin password, and without a `.env` the app generates the APP_KEY and admin password on first start and keeps them in the storage volume (`make admin` prints them).
+
+| Command | What it does |
+|---|---|
+| `make demo` | build, start, seed, print URL and login |
+| `make test` | run the test suite inside the test image (same as CI) |
+| `make admin` / `make logs` | print the login / follow the logs |
+| `make verify` / `make backup` | balance check / backup now (database dump + files, in the storage volume) |
+| `make down` / `make reset` | stop (data kept) / delete all data (asks first) |
+
+Containers: `app` (PHP-FPM; migrates and seeds on start, safe to repeat), `web` (Nginx, the only published port), `scheduler` (`schedule:work`: backup 02:00, balance check 02:30), `db` (Postgres, not published). Redis and a queue worker are not included because the app does not use them. Files are in `docker/` and `docker-compose.yml`; the `Docker` GitHub Actions workflow runs `make demo`, checks the login page, the demo data and the balances, and runs the tests in the container on every pull request.
+
+The root `Dockerfile` is the older single-container image (`php artisan serve` on port 10000), kept as it was for existing deployments.
+
+## Run it without Docker
 
 ```bash
 cp .env.example .env               # set DB_* and ADMIN_EMAIL / ADMIN_PASSWORD
@@ -42,7 +64,7 @@ php artisan db:seed --class=DemoSeeder   # optional: fictional wholesaler data
 php artisan serve
 ```
 
-With Docker, the `Dockerfile` migrates and runs the seeders on every start. That is safe: the admin is created only if the account does not exist yet, and an existing password is never reset. The scheduler (backup and nightly check) needs its own process: `php artisan schedule:work`, or cron running `php artisan schedule:run` every minute.
+With the single-container root `Dockerfile`, the container migrates and runs the seeders on every start. That is safe: the admin is created only if the account does not exist yet, and an existing password is never reset. The scheduler (backup and nightly check) needs its own process: `php artisan schedule:work`, or cron running `php artisan schedule:run` every minute.
 
 ### Demo data
 
@@ -66,6 +88,8 @@ routes/console.php         Schedule: backup 02:00, consistency check 02:30
 database/seeders/          AdminUserSeeder (from .env), DemoSeeder (fictional data)
 resources/views/           Blade views, including invoices/pdf and partners/statement-pdf
 tests/Feature/             Feature tests
+docker/                    Multi-stage Dockerfile (app, web, test), Nginx config, entrypoint
+erp-sync-engine/           Separate Python CLI: ERP CSV/XML export -> WooCommerce/Magento stock and prices
 ```
 
 ---
