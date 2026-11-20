@@ -5,15 +5,19 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PartnerController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\DashboardController;
 
 
+// No public landing page: send everyone straight into the app (or to the login form).
 Route::get('/', function () {
-    return view('welcome');
-});
+    return auth()->check()
+        ? redirect()->route('dashboard')
+        : redirect()->route('login');
+})->name('home');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'approved', 'verified'])->name('dashboard');
+Route::get('/dashboard', DashboardController::class)
+    ->middleware(['auth', 'approved', 'verified'])
+    ->name('dashboard');
 
 
 use App\Http\Controllers\HistoryController;

@@ -44,4 +44,13 @@
             </x-primary-button>
         </div>
     </form>
+
+    @if (Route::has('register'))
+        <p class="mt-6 pt-4 border-t border-gray-200 text-center text-sm text-gray-600">
+            Nemate nalog?
+            <a href="{{ route('register') }}" class="font-semibold text-indigo-600 hover:text-indigo-800 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Registrujte se
+            </a>
+        </p>
+    @endif
 </x-guest-layout>
