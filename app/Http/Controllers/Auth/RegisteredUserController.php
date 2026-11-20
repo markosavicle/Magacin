@@ -47,6 +47,6 @@ class RegisteredUserController extends Controller
 
         // Optionally notify admin here (implement notification logic)
 
-        return redirect()->route('login')->with('status', 'Registration submitted. Awaiting admin approval.');
+        return redirect()->route('login')->with('status', 'Registracija je primljena. Nalog čeka odobrenje administratora, pa ćete se moći prijaviti.');
     }
 }

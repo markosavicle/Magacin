@@ -111,7 +111,7 @@
                     <thead class="bg-gray-50">
                         <tr>
                             @php
-                                function getSortUrl($column) {
+                                $getSortUrl = function ($column) {
                                     $currentSort = request('sort_by');
                                     $currentDirection = request('sort_direction', 'desc');
 
@@ -125,9 +125,9 @@
                                         'sort_by' => $column,
                                         'sort_direction' => $newDirection
                                     ]));
-                                }
+                                };
 
-                                function getSortArrow($column) {
+                                $getSortArrow = function ($column) {
                                     $currentSort = request('sort_by');
                                     $currentDirection = request('sort_direction', 'desc');
 
@@ -135,38 +135,38 @@
                                         return $currentDirection == 'asc' ? '↑' : '↓';
                                     }
                                     return '';
-                                }
+                                };
                             @endphp
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                <a href="{{ getSortUrl('invoice_number') }}" class="hover:text-gray-700 flex items-center gap-1">
+                                <a href="{{ $getSortUrl('invoice_number') }}" class="hover:text-gray-700 flex items-center gap-1">
                                     Broj fakture
-                                    <span class="text-xs">{{ getSortArrow('invoice_number') }}</span>
+                                    <span class="text-xs">{{ $getSortArrow('invoice_number') }}</span>
                                 </a>
                             </th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Partner</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                <a href="{{ getSortUrl('date') }}" class="hover:text-gray-700 flex items-center gap-1">
+                                <a href="{{ $getSortUrl('date') }}" class="hover:text-gray-700 flex items-center gap-1">
                                     Datum
-                                    <span class="text-xs">{{ getSortArrow('date') }}</span>
+                                    <span class="text-xs">{{ $getSortArrow('date') }}</span>
                                 </a>
                             </th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                <a href="{{ getSortUrl('amount') }}" class="hover:text-gray-700 flex items-center gap-1">
+                                <a href="{{ $getSortUrl('amount') }}" class="hover:text-gray-700 flex items-center gap-1">
                                     Iznos
-                                    <span class="text-xs">{{ getSortArrow('amount') }}</span>
+                                    <span class="text-xs">{{ $getSortArrow('amount') }}</span>
                                 </a>
                             </th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                <a href="{{ getSortUrl('type') }}" class="hover:text-gray-700 flex items-center gap-1">
+                                <a href="{{ $getSortUrl('type') }}" class="hover:text-gray-700 flex items-center gap-1">
                                     Tip
-                                    <span class="text-xs">{{ getSortArrow('type') }}</span>
+                                    <span class="text-xs">{{ $getSortArrow('type') }}</span>
                                 </a>
                             </th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Napomena</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                <a href="{{ getSortUrl('created_at') }}" class="hover:text-gray-700 flex items-center gap-1">
+                                <a href="{{ $getSortUrl('created_at') }}" class="hover:text-gray-700 flex items-center gap-1">
                                     Kreirano
-                                    <span class="text-xs">{{ getSortArrow('created_at') }}</span>
+                                    <span class="text-xs">{{ $getSortArrow('created_at') }}</span>
                                 </a>
                             </th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Akcije</th>
