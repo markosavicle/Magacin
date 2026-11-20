@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Http\Middleware\EnsureUserIsApproved;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -50,11 +51,12 @@ class LoginRequest extends FormRequest
             ]);
         }
 
-        $user = Auth::user();
-        if (! $user->approved) {
-            Auth::logout();
+        if (! Auth::user()->approved) {
+            // The password was right, so this is not a failed attempt: don't count it towards the lockout.
+            Auth::guard('web')->logout();
+
             throw ValidationException::withMessages([
-                'email' => 'Your account is not approved yet. Please wait for admin approval.'
+                'email' => EnsureUserIsApproved::PENDING_MESSAGE,
             ]);
         }
 
